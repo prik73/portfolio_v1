@@ -1,0 +1,7 @@
+# Ignore ALL node_modules directories recursively
+**/node_modules/
+
+# Common Node.js things to ignore
+*.log
+.env
+dist/
