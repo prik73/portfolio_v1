@@ -6,7 +6,7 @@ import Projects from './pages/Projects';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import { Analytics } from "@vercel/analytics/react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Footer from './components/Footer';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-    
+
     fetch('https://portfolio-v1-a44w.onrender.com/api/visits')
       .then(res => res.json())
       .then(data => setCount(data.count));
