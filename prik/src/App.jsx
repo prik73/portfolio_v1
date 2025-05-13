@@ -11,9 +11,13 @@ import Footer from './components/Footer';
 
 function App() {
   const [count, setCount] = useState(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/visits')
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    
+    fetch('https://portfolio-v1-a44w.onrender.com/api/visits')
       .then(res => res.json())
       .then(data => setCount(data.count));
   }, []);
