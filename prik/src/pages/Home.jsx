@@ -22,7 +22,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-screen pt-24 w-full bg-gradient-to-t from-black to-neutral-900 text-white flex items-start justify-center px-5 -my-15 overflow-hidden no-scrollbar">
+    <div className="h-screen pt-24 w-full bg-gradient-to-t from-black to-neutral-900 text-white flex items-start justify-center px-5 -my-1 overflow-hidden no-scrollbar">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl w-full mt-30 py-44">
         {/* Left: Humanized Introduction */}
         <div className="flex flex-col justify-center space-y-6">          
