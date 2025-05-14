@@ -4,7 +4,7 @@ import fool from '../assets/fool.png'
 
 export default function About() {
   return (
-    <div className="min-h-screen w-full bg-black text-white flex items-center justify-center px-5 -my-15 overflow-hidden no-scrollbar">
+    <div className="min-h-screen w-full bg-black text-white flex items-center justify-center px-5 pt-35 overflow-hidden no-scrollbar">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl w-full">
         {/* Left side: About me content */}
         <div className="flex flex-col justify-center space-y-4">
