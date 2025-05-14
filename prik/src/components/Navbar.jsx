@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function Navbar() {
   const location = useLocation();
@@ -75,26 +76,35 @@ function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
-        {isOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full bg-neutral-900 rounded-2xl shadow-lg mt-2 py-2 transition-all duration-300 ease-in-out">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={`
-                  block px-4 py-3 mx-2 my-1 rounded-xl text-sm font-medium transition-all duration-300 ease-in-out
-                  ${location.pathname === item.path 
-                    ? 'bg-blue-500 text-white' 
-                    : 'text-gray-300 hover:bg-neutral-800 hover:text-white'}
-                `}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        )}
+         {/* Mobile Dropdown with Animation */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="md:hidden absolute top-full left-0 w-full bg-neutral-900 rounded-2xl shadow-lg mt-2 py-2"
+            >
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`
+                    block px-4 py-3 mx-2 my-1 rounded-xl text-sm font-medium transition-all duration-300 ease-in-out
+                    ${location.pathname === item.path 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-300 hover:bg-neutral-800 hover:text-white'}
+                  `}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
