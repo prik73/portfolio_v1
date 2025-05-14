@@ -1,5 +1,5 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
@@ -8,10 +8,12 @@ import Contact from './pages/Contact';
 import { Analytics } from "@vercel/analytics/react";
 import { useState, useEffect, useRef } from 'react';
 import Footer from './components/Footer';
+import { AnimatePresence } from 'framer-motion'; 
 
 function App() {
   const [count, setCount] = useState(null);
   const hasFetched = useRef(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -23,21 +25,24 @@ function App() {
   }, []);
 
   return (
-    <Router>
       <div className="flex flex-col min-h-screen bg-black text-white">
         <Analytics />
         <Navbar />
         <main className="">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </AnimatePresence>
         </main>
-        <Footer count={count} />
+        <footer>
+          <Footer count={count} />
+        </footer>
+        
       </div>
-    </Router>
   );
 }
 

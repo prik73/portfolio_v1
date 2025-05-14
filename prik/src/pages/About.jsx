@@ -1,9 +1,16 @@
 // app/about/page.jsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import fool from '../assets/fool.png'
+import { motion } from 'framer-motion';
 
 export default function About() {
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4, ease: 'easeInOut' }}
+    >
     <div className="min-h-screen w-full bg-black text-white flex items-center justify-center px-5 pt-35 overflow-hidden no-scrollbar">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl w-full">
         {/* Left side: About me content */}
@@ -70,5 +77,6 @@ export default function About() {
         </div>
       </div>
     </div>
+    </motion.div>
   );
 }

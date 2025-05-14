@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Michelangelo from '../assets/mic.jpg'
 import ArtImage from '../components/ArtImage'
+import { motion } from 'framer-motion';
 
 import { AuroraText } from "@/components/magicui/aurora-text";
 
@@ -69,56 +70,63 @@ const projects = [
 
 export default function Projects() {
   return (
-    <div className="pt-40 min-h-screen w-full bg-black text-white flex flex-col items-center px-6 py-12 scrollbar-hide">
-        {/* Art Banner */}
-      {/* <ArtImage /> */}
-      <h1 className="text-4xl font-bold mb-8"><AuroraText>projects which i've made</AuroraText> in the last year</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10 max-w-6xl w-full">
-        {projects.map((project, index) => (
-          <Card key={index} className="bg-neutral-900 border border-neutral-800 shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:bg-neutral-800">
-            <CardHeader>
-              <CardTitle className="text-xl text-white">{project.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-gray-300 flex-1 flex flex-col">
-              <div className="relative w-full mb-4">
-                {/* <img
-                  src={project.image}
-                  alt={project.title}
-                  className="object-cover w-full h-full rounded"
-                /> */}
-              </div>
-              <p className="mb-2">{project.description}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {project.techStack.map((tech, idx) => (
-                  <span key={idx} className="bg-gray-700 text-white text-xs px-2 py-1 rounded">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-auto">
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline mr-4"
-                >
-                  GitHub
-                </a>
-                {project.live && (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4, ease: 'easeInOut' }}
+    >
+      <div className="pt-40 min-h-screen w-full bg-black text-white flex flex-col items-center px-6 py-12 scrollbar-hide">
+          {/* Art Banner */}
+        {/* <ArtImage /> */}
+        <h1 className="text-4xl font-bold mb-8"><AuroraText>projects which i've made</AuroraText> in the last year</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10 max-w-6xl w-full">
+          {projects.map((project, index) => (
+            <Card key={index} className="bg-neutral-900 border border-neutral-800 shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:bg-neutral-800">
+              <CardHeader>
+                <CardTitle className="text-xl text-white">{project.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-gray-300 flex-1 flex flex-col">
+                <div className="relative w-full mb-4">
+                  {/* <img
+                    src={project.image}
+                    alt={project.title}
+                    className="object-cover w-full h-full rounded"
+                  /> */}
+                </div>
+                <p className="mb-2">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {project.techStack.map((tech, idx) => (
+                    <span key={idx} className="bg-gray-700 text-white text-xs px-2 py-1 rounded">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-auto">
                   <a
-                    href={project.live}
+                    href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
+                    className="text-blue-400 hover:underline mr-4"
                   >
-                    Live Site
+                    GitHub
                   </a>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  {project.live && (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Live Site
+                    </a>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
