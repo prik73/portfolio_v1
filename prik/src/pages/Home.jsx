@@ -80,11 +80,11 @@ export default function Home() {
           {/* Skills Card */}
           <Card className="bg-neutral-900/70 border border-neutral-700 shadow-lg backdrop-blur-sm">
             <CardHeader className="border-b border-neutral-700">
-              <CardTitle className="text-lg sm:text-xl text-white">Tech I Love</CardTitle>
+              <CardTitle className="text-lg sm:text-xl text-white">Things I Love</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <div className="flex flex-wrap gap-2">
-                {["JavaScript", "React", "Next.js", "Node.js", "Tailwind CSS", "TypeScript"].map((skill) => (
+                {["cycling", "React", "hiking", "running", "buying books", "reading 50% of a book, and then doing same for another"].map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1 bg-neutral-800 rounded-full text-sm text-gray-300"
