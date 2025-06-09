@@ -19,7 +19,7 @@ function App() {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    fetch('https://portfolio-v1-a44w.onrender.com/api/visits')
+    fetch('http://localhost:3001/api/visits')
       .then(res => res.json())
       .then(data => setCount(data.count));
   }, []);
