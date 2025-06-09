@@ -76,7 +76,7 @@ export default function Projects() {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.4, ease: 'easeInOut' }}
     >
-      <div className="pt-40 min-h-screen w-full bg-gradient-to-b from-black via-neutral-900 to-black text-white flex flex-col items-center px-6 py-12 scrollbar-hide">
+      <div className="pt-40 min-h-screen w-full bg-black text-white flex flex-col items-center px-6 py-12 scrollbar-hide">
         
         {/* Header with time info */}
         <div className="w-full max-w-6xl mb-8">
@@ -236,7 +236,7 @@ export default function Projects() {
               </div>
               
               <p className="text-gray-500 text-sm mt-4">
-                Usually respond within 24 hours ⚡ <br></br>(blazing fast speed, ik)
+                Usually respond within 24 hours ⚡
               </p>
             </CardContent>
           </Card>
