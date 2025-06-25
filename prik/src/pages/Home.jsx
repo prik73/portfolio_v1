@@ -81,7 +81,7 @@ export default function Home() {
             <CardHeader className="border-b border-neutral-700">
               <CardTitle className="text-lg sm:text-xl text-white">// Learning in Public</CardTitle>
             </CardHeader>
-            <CardContent className="text-gray-400 pt-4 text-sm sm:text-base">
+            <CardContent className="text-gray-200 pt-4 text-sm sm:text-base">
               <p>
                 Two years in and still amazed by how much I don't know. 
                 Every project teaches me something new, every bug humbles me. 
@@ -119,7 +119,7 @@ export default function Home() {
               <CardTitle className="text-lg sm:text-xl text-white">Technologies I've worked with</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
-              <p className="text-gray-400 text-xs mb-3">
+              <p className="text-gray-200 text-xs mb-3">
                 Good engineering is tech agnostic, but for reference:
               </p>
               <div className="flex flex-wrap gap-2">
