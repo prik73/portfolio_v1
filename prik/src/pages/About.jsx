@@ -11,7 +11,7 @@ export default function About() {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.4, ease: 'easeInOut' }}
     >
-    <div className="min-h-screen w-full bg-black text-white flex items-center justify-center px-5 pt-35 overflow-hidden no-scrollbar">
+    <div className="min-h-screen w-full bg-black text-white flex items-center justify-center px-4 sm:px-6 md:px-10 pt-32 scrollbar-hide">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl w-full">
         {/* Left side: About me content */}
         <div className="flex flex-col justify-center space-y-4">
@@ -39,18 +39,12 @@ export default function About() {
         </div>
 
         {/* Right side: Personal Card */}
-        {/* <Card className="w-60 h-30 bg-neutral-900 border border-neutral-700 shadow-lg">
-              <CardContent className="p-0 h-full w-full"> */}
-                <img
-                  src={fool} // Replace with your image path
-                  alt="Profile"
-                  className="object-cover h-full w-full rounded-md"
-                />
-              {/* </CardContent>
-            </Card> */}
+        <img
+          src={fool} // Replace with your image path
+          alt="Profile"
+          className="object-cover h-full w-full rounded-md"
+        />
         
-        
-
         {/* Additional section for more about me */}
         <div className="md:col-span-2 grid grid-cols-1 gap-4 mt-6">
           <Card className="bg-neutral-900 border border-neutral-700 shadow-lg">
