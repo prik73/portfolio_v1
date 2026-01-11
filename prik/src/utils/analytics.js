@@ -65,8 +65,6 @@ export const trackVisit = async () => {
             visitor_id: visitorId,
             city: city || 'Unknown',
             country: country || 'Unknown',
-            latitude: latitude || null,
-            longitude: longitude || null,
             device_type,
             os,
             browser: userAgent, // minimal parsing for now
