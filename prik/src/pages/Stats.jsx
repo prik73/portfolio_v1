@@ -20,6 +20,23 @@ export default function Stats() {
     const { startTransition } = useTransition();
 
     useEffect(() => {
+        // Handle ESC key for navigation
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                if (showSystemMonitor) {
+                    setShowSystemMonitor(false);
+                } else {
+                    // Navigate back to home
+                    startTransition(window.innerWidth / 2, window.innerHeight / 2, '/');
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [showSystemMonitor, startTransition]);
+
+    useEffect(() => {
         // 1. Fetch Total Visits Logic (Simplified as count of rows for now)
         const fetchStats = async () => {
             const { count } = await supabase.from('website_visits').select('*', { count: 'exact', head: true });
