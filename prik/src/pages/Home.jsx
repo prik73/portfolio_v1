@@ -53,14 +53,17 @@ const projects = [
   },
 ];
 
+import { generateRandomColors } from '../utils/colors';
+
 export default function Home() {
   const [greeting, setGreeting] = useState("Good afternoon!");
   const [activeSection, setActiveSection] = useState("home");
-  const [isLightMode, setIsLightMode] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    return saved === 'light';
+  const [themeColor, setThemeColor] = useState(() => {
+    const saved = JSON.parse(localStorage.getItem('themeColor'));
+    return saved || { backgroundColor: '#000000', textColor: '#ffffff' };
   });
   const sectionsRef = useRef({});
+
 
   // Update greeting based on time
   useEffect(() => {
@@ -77,21 +80,20 @@ export default function Home() {
   }, []);
 
   // Toggle theme function
-  const toggleTheme = () => {
-    setIsLightMode(prev => {
-      const newMode = !prev;
-      localStorage.setItem('theme', newMode ? 'light' : 'dark');
-      return newMode;
-    });
+  // Randomize theme function
+  const randomizeTheme = () => {
+    const newTheme = generateRandomColors();
+    setThemeColor(newTheme);
+    localStorage.setItem('themeColor', JSON.stringify(newTheme));
   };
 
   // Listen for double-click, 'd', 'Ctrl', and 'Tab' key press
   useEffect(() => {
-    const handleDoubleClick = () => toggleTheme();
+    const handleDoubleClick = () => randomizeTheme();
     const handleKeyPress = (e) => {
-      if (e.key === 'd' || e.key === 'D' || e.key === 'Control' || e.key === 'Tab') {
+      if (e.key === 'f' || e.key === 'F' || e.key === 'Control' || e.key === 'Tab') {
         e.preventDefault();
-        toggleTheme();
+        randomizeTheme();
       }
     };
 
@@ -141,7 +143,20 @@ export default function Home() {
   ];
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${isLightMode ? 'text-neutral-900' : 'bg-black text-white'}`} style={isLightMode ? { backgroundColor: '#FFFAED' } : {}}>
+
+    <div
+      className="min-h-screen transition-colors duration-500"
+      style={{
+        backgroundColor: themeColor.backgroundColor,
+        color: themeColor.textColor,
+        '--theme-bg': themeColor.backgroundColor,
+        '--theme-text': themeColor.textColor,
+        '--theme-text-muted': themeColor.textColor + 'b3', // 70% opacity for better contrast
+        '--theme-border': themeColor.textColor + '33', // 20% opacity
+        '--theme-inverse-bg': themeColor.textColor,
+        '--theme-inverse-text': themeColor.backgroundColor,
+      }}
+    >
       {/* Left Sidebar Navigation */}
       <nav className="fixed left-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
         <div className="flex flex-col space-y-6">
@@ -152,14 +167,14 @@ export default function Home() {
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-left
                 ${activeSection === item.id
-                  ? isLightMode ? 'text-neutral-900' : 'text-white'
-                  : isLightMode ? 'text-neutral-500 hover:text-neutral-700' : 'text-gray-500 hover:text-gray-300'}
+                  ? 'text-[var(--theme-text)]'
+                  : 'text-[var(--theme-text-muted)] hover:opacity-100'}
               `}
             >
               {activeSection === item.id && (
                 <motion.span
                   layoutId="activeNav"
-                  className={`absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${isLightMode ? 'bg-neutral-900' : 'bg-white'}`}
+                  className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[var(--theme-text)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -179,14 +194,14 @@ export default function Home() {
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-right
                 ${activeSection === item.id
-                  ? isLightMode ? 'text-neutral-900' : 'text-white'
-                  : isLightMode ? 'text-neutral-500 hover:text-neutral-700' : 'text-gray-500 hover:text-gray-300'}
+                  ? 'text-[var(--theme-text)]'
+                  : 'text-[var(--theme-text-muted)] hover:opacity-100'}
               `}
             >
               {activeSection === item.id && (
                 <motion.span
                   layoutId="activeMobileNav"
-                  className={`absolute -right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${isLightMode ? 'bg-neutral-900' : 'bg-white'}`}
+                  className="absolute -right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[var(--theme-text)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -212,17 +227,14 @@ export default function Home() {
             <h1 className="text-6xl lg:text-7xl font-bold mb-4 tracking-tight">
               {greeting}
             </h1>
-            <p className={`text-xl lg:text-2xl mb-8 ${isLightMode ? 'text-neutral-600' : 'text-gray-400'}`}>
+            <p className="text-xl lg:text-2xl mb-8 text-[var(--theme-text-muted)]">
               I'm Priyanshu, a backend developer who tries to build scalable systems, but my users are my few friends. But it can scale! :)
             </p>
 
             <div className="flex gap-4">
               <button
                 onClick={() => scrollToSection('projects')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${isLightMode
-                  ? 'bg-neutral-900 text-white hover:bg-neutral-800'
-                  : 'bg-white text-black hover:bg-gray-200'
-                  }`}
+                className="px-6 py-3 rounded-lg font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90"
               >
                 View Projects
               </button>
@@ -230,10 +242,7 @@ export default function Home() {
                 href="https://github.com/prik73"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`px-6 py-3 rounded-lg font-medium transition-colors border ${isLightMode
-                  ? 'bg-transparent text-neutral-900 border-neutral-900 hover:bg-neutral-900 hover:text-white'
-                  : 'bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700'
-                  }`}
+                className="px-6 py-3 rounded-lg font-medium transition-colors border border-[var(--theme-border)] hover:bg-[var(--theme-inverse-bg)] hover:text-[var(--theme-inverse-text)]"
               >
                 GitHub
               </a>
@@ -244,7 +253,7 @@ export default function Home() {
         {/* Projects Section */}
         <section
           ref={el => sectionsRef.current['projects'] = el}
-          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -262,27 +271,27 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="border-b border-neutral-800 pb-6 last:border-b-0"
+                  className="border-b border-[var(--theme-border)] pb-6 last:border-b-0"
                 >
                   {project.live ? (
                     <a
                       href={project.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xl font-semibold mb-2 hover:text-blue-400 transition-colors inline-block"
+                      className="text-xl font-semibold mb-2 hover:opacity-80 transition-colors inline-block text-[var(--theme-text)]"
                     >
                       {project.title}
                     </a>
                   ) : (
-                    <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                    <h3 className="text-xl font-semibold mb-2 text-[var(--theme-text)]">{project.title}</h3>
                   )}
-                  <p className={`mb-3 ${isLightMode ? 'text-neutral-700' : 'text-gray-400'}`}>{project.description}</p>
+                  <p className="mb-3 text-[var(--theme-text-muted)]">{project.description}</p>
 
                   <div className="flex flex-wrap gap-2 mb-3">
                     {project.techStack.map((tech, idx) => (
                       <span
                         key={idx}
-                        className={`text-xs px-2 py-1 rounded border ${isLightMode ? 'bg-neutral-200 text-neutral-800 border-neutral-300' : 'bg-neutral-800 text-gray-300 border-neutral-700'}`}
+                        className="text-xs px-2 py-1 rounded border border-[var(--theme-border)] text-[var(--theme-text)] font-medium"
                       >
                         {tech}
                       </span>
@@ -294,7 +303,7 @@ export default function Home() {
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center gap-1 transition-colors ${isLightMode ? 'text-neutral-700 hover:text-neutral-900' : 'text-gray-400 hover:text-white'}`}
+                      className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
                     >
                       <Github className="w-4 h-4" />
                       Code
@@ -304,7 +313,7 @@ export default function Home() {
                         href={project.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+                        className="flex items-center gap-1 text-[var(--theme-text)] font-semibold hover:opacity-80 transition-colors"
                       >
                         <ExternalLink className="w-4 h-4" />
                         Live
@@ -320,7 +329,7 @@ export default function Home() {
         {/* About Section */}
         <section
           ref={el => sectionsRef.current['about'] = el}
-          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -329,12 +338,12 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl lg:text-5xl font-bold mb-8">
-              <span className={isLightMode ? 'text-neutral-500' : 'text-gray-500'}>{'<'}</span>
+              <span className="text-[var(--theme-text-muted)]">{'<'}</span>
               About
-              <span className={isLightMode ? 'text-neutral-500' : 'text-gray-500'}>{' />'}</span>
+              <span className="text-[var(--theme-text-muted)]">{' />'}</span>
             </h2>
 
-            <div className={`space-y-4 text-lg leading-relaxed max-w-2xl ${isLightMode ? 'text-neutral-700' : 'text-gray-300'}`}>
+            <div className="space-y-4 text-lg leading-relaxed max-w-2xl text-[var(--theme-text-muted)]">
               <p>
                 Started my B.Tech degree in 2022, diving headfirst into the world of programming.
                 By 2024, I was freelancing and building web applications that solve real problems.
@@ -357,7 +366,7 @@ export default function Home() {
         {/* Contact Section */}
         <section
           ref={el => sectionsRef.current['contact'] = el}
-          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -370,17 +379,17 @@ export default function Home() {
 
             <a
               href="mailto:prinovac@gmail.com"
-              className={`text-xl transition-colors mb-8 inline-block ${isLightMode ? 'text-neutral-800 hover:text-neutral-900' : 'text-gray-300 hover:text-white'}`}
+              className="text-xl transition-colors mb-8 inline-block text-[var(--theme-text)] hover:opacity-80"
             >
               prinovac@gmail.com
             </a>
 
-            <div className={`flex gap-6 items-center justify-center text-2xl mt-8 ${isLightMode ? 'text-neutral-700' : 'text-gray-400'}`}>
+            <div className="flex gap-6 items-center justify-center text-2xl mt-8 text-[var(--theme-text-muted)]">
               <a
                 href="https://github.com/prik73"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="hover:text-[var(--theme-text)] transition-colors"
               >
                 <FaGithub />
               </a>
@@ -388,7 +397,7 @@ export default function Home() {
                 href="https://www.instagram.com/prik.73/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="hover:text-[var(--theme-text)] transition-colors"
               >
                 <FaInstagram />
               </a>
@@ -396,7 +405,7 @@ export default function Home() {
                 href="https://twitter.com/prik73"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="hover:text-[var(--theme-text)] transition-colors"
               >
                 <FaTwitter />
               </a>
@@ -405,7 +414,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <div className={`py-8 text-center text-sm border-t ${isLightMode ? 'text-neutral-600 border-neutral-300' : 'text-gray-500 border-neutral-800'}`}>
+        <div className="py-8 text-center text-sm border-t border-[var(--theme-border)] text-[var(--theme-text-muted)]">
           <p>Built with sweat and blood.</p>
         </div>
       </div>
