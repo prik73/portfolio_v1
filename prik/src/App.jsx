@@ -7,20 +7,26 @@ import { AnimatePresence } from 'framer-motion';
 import { TransitionProvider } from './context/TransitionContext';
 import { ThemeProvider } from './context/ThemeContext';
 
-function App() {
+function AppRoutes() {
   const location = useLocation();
 
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
+        <Route path="/stats" element={<Stats />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
   return (
     <ThemeProvider>
       <TransitionProvider>
         <Analytics />
         <main className="">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/stats" element={<Stats />} />
-            </Routes>
-          </AnimatePresence>
+          <AppRoutes />
         </main>
       </TransitionProvider>
     </ThemeProvider>

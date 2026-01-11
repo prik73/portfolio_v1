@@ -46,7 +46,7 @@ export const trackVisit = async () => {
             }
         }
 
-        const { city, country_name: country, latitude, longitude } = geo;
+        const { city, country_name: country } = geo;
         const { userAgent } = navigator;
 
         // 5. Parse simplified device/OS (Regex helper)

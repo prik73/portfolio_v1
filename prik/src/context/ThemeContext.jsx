@@ -19,9 +19,7 @@ export const ThemeProvider = ({ children }) => {
     useEffect(() => {
         const handleDoubleClick = () => randomizeTheme();
         const handleKeyPress = (e) => {
-            if (e.key === 'd' || e.key === 'D' || e.key === 'Control' || e.key === 'Tab') {
-                // Only prevent default if it's not a standard navigation key we want to keep
-                if (e.key === 'Tab') e.preventDefault();
+            if (e.key === 'f' || e.key === 'F' || e.key === 'Control') {
                 randomizeTheme();
             }
         };

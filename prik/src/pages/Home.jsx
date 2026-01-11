@@ -272,6 +272,7 @@ export default function Home() {
         {/* Projects Section */}
         <section
           ref={el => sectionsRef.current['projects'] = el}
+          data-section="projects"
           className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
         >
           <motion.div
@@ -279,6 +280,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
+            className="pr-20 lg:pr-0"
           >
             <h2 className="text-4xl lg:text-5xl font-bold mb-12">Projects</h2>
 
@@ -318,15 +320,17 @@ export default function Home() {
                   </div>
 
                   <div className="flex gap-4 text-sm">
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
-                    >
-                      <Github className="w-4 h-4" />
-                      Code
-                    </a>
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
+                      >
+                        <Github className="w-4 h-4" />
+                        Code
+                      </a>
+                    )}
                     {project.live && (
                       <a
                         href={project.live}
@@ -348,6 +352,7 @@ export default function Home() {
         {/* About Section */}
         <section
           ref={el => sectionsRef.current['about'] = el}
+          data-section="about"
           className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
         >
           <motion.div
@@ -355,6 +360,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
+            className="pr-20 lg:pr-0"
           >
             <h2 className="text-4xl lg:text-5xl font-bold mb-8">
               <span className="text-[var(--theme-text-muted)]">{'<'}</span>
