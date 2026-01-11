@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { useTransition } from "../context/TransitionContext";
+import { useTheme } from "../context/ThemeContext";
 import { Github, ExternalLink, Mail } from 'lucide-react';
 import { FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
 
@@ -54,7 +56,6 @@ const projects = [
   },
 ];
 
-import { generateRandomColors } from '../utils/colors';
 import { trackVisit, getUniqueVisitors } from '../utils/analytics';
 import { supabase } from '../lib/supabase';
 
@@ -63,10 +64,8 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState("home");
   const [visitCount, setVisitCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState(1);
-  const [themeColor, setThemeColor] = useState(() => {
-    const saved = JSON.parse(localStorage.getItem('themeColor'));
-    return saved || { backgroundColor: '#000000', textColor: '#ffffff', accentColor: '#10B981' };
-  });
+  const { themeColor, randomizeTheme } = useTheme();
+  const { startTransition } = useTransition();
   const sectionsRef = useRef({});
 
   // Analytics & Realtime
@@ -112,32 +111,7 @@ export default function Home() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Toggle theme function
-  // Randomize theme function
-  const randomizeTheme = () => {
-    const newTheme = generateRandomColors();
-    setThemeColor(newTheme);
-    localStorage.setItem('themeColor', JSON.stringify(newTheme));
-  };
 
-  // Listen for double-click, 'd', 'Ctrl', and 'Tab' key press
-  useEffect(() => {
-    const handleDoubleClick = () => randomizeTheme();
-    const handleKeyPress = (e) => {
-      if (e.key === 'f' || e.key === 'F' || e.key === 'Control' || e.key === 'Tab') {
-        e.preventDefault();
-        randomizeTheme();
-      }
-    };
-
-    document.addEventListener('dblclick', handleDoubleClick);
-    document.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      document.removeEventListener('dblclick', handleDoubleClick);
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, []);
 
   // Scroll spy to update active section
   useEffect(() => {
@@ -168,6 +142,17 @@ export default function Home() {
     }
   };
 
+  const handleStatsClick = (e, path) => {
+    e.preventDefault();
+    if (path === '/stats') {
+      const x = e.clientX;
+      const y = e.clientY;
+      startTransition(x, y, path);
+    } else {
+      window.location.href = path; // Fallback for other paths if any
+    }
+  };
+
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'projects', label: 'Projects' },
@@ -178,27 +163,20 @@ export default function Home() {
 
   return (
 
-    <div
-      className="min-h-screen transition-colors duration-500"
-      style={{
-        backgroundColor: themeColor.backgroundColor,
-        color: themeColor.textColor,
-        '--theme-bg': themeColor.backgroundColor,
-        '--theme-text': themeColor.textColor,
-        '--theme-text-muted': themeColor.textColor + 'b3', // 70% opacity for better contrast
-        '--theme-border': themeColor.textColor + '33', // 20% opacity
-        '--theme-inverse-bg': themeColor.textColor,
-        '--theme-inverse-text': themeColor.backgroundColor,
-        '--theme-accent': themeColor.accentColor || '#10B981', // Fallback to green
-      }}
-    >
+    <div className="">
       {/* Left Sidebar Navigation */}
       <nav className="fixed left-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
         <div className="flex flex-col space-y-6">
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => item.path ? window.location.href = item.path : scrollToSection(item.id)}
+              onClick={(e) => {
+                if (item.path) {
+                  handleStatsClick(e, item.path);
+                } else {
+                  scrollToSection(item.id);
+                }
+              }}
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-left
                 ${activeSection === item.id
@@ -225,7 +203,13 @@ export default function Home() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => item.path ? window.location.href = item.path : scrollToSection(item.id)}
+              onClick={(e) => {
+                if (item.path) {
+                  handleStatsClick(e, item.path);
+                } else {
+                  scrollToSection(item.id);
+                }
+              }}
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-right
                 ${activeSection === item.id

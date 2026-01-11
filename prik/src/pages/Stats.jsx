@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { FaUsers, FaGlobeAmericas } from 'react-icons/fa';
+import { useTheme } from '../context/ThemeContext'; // Import useTheme context
+import { useTransition } from '../context/TransitionContext'; // Import useTransition context
 import { Map, MapControls } from '../components/ui/map';
 
 
@@ -12,10 +14,8 @@ export default function Stats() {
     const [totalVisits, setTotalVisits] = useState(0);
     const [onlineUsers, setOnlineUsers] = useState(1);
     const [locations, setLocations] = useState([]);
-    const [themeColor, setThemeColor] = useState(() => {
-        const saved = JSON.parse(localStorage.getItem('themeColor'));
-        return saved || { backgroundColor: '#000000', textColor: '#ffffff', accentColor: '#10B981' };
-    });
+    const { themeColor } = useTheme(); // Use global theme
+    const { startTransition } = useTransition();
 
     useEffect(() => {
         // 1. Fetch Total Visits Logic (Simplified as count of rows for now)
@@ -64,18 +64,7 @@ export default function Stats() {
 
     return (
         <div
-            className="min-h-screen p-8 lg:p-20"
-            style={{
-                backgroundColor: themeColor.backgroundColor,
-                color: themeColor.textColor,
-                '--theme-bg': themeColor.backgroundColor,
-                '--theme-text': themeColor.textColor,
-                '--theme-text-muted': themeColor.textColor + 'b3',
-                '--theme-border': themeColor.textColor + '33',
-                '--theme-inverse-bg': themeColor.textColor,
-                '--theme-inverse-text': themeColor.backgroundColor,
-                '--theme-accent': themeColor.accentColor || '#10B981',
-            }}
+            className="min-h-screen p-8 lg:p-20 transition-colors duration-500" // Kept simple
         >
             <div className="max-w-6xl mx-auto">
                 <motion.div
@@ -85,7 +74,10 @@ export default function Stats() {
                 >
                     <div className="flex items-center gap-4 mb-8">
                         <button
-                            onClick={() => window.location.href = '/'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                startTransition(e.clientX, e.clientY, '/');
+                            }}
                             className="text-sm opacity-60 hover:opacity-100 transition-opacity"
                         >
                             &larr; Back home
@@ -109,6 +101,9 @@ export default function Stats() {
                                 <span className="text-sm font-medium">Live Users</span>
                             </div>
                             <p className="text-3xl font-bold">{onlineUsers}</p>
+                            {onlineUsers === 1 && (
+                                <p className="text-xs mt-2 opacity-60 italic">it's only you here, you beautiful human being :)</p>
+                            )}
                         </div>
 
                         <div className="p-4 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-inverse-bg)]/5">
