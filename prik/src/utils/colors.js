@@ -26,7 +26,7 @@ const hslToHex = (h, s, l) => {
  */
 export const generateRandomColors = () => {
     const strategy = Math.random();
-    let bg, text;
+    let bg, text, accent;
 
     if (strategy < 0.5) {
         // Strategy 1: Dark & Neon (Cyberpunk/Antiwork style)
@@ -38,6 +38,10 @@ export const generateRandomColors = () => {
         const textHue = (hue + random(120, 240)) % 360;
         text = hslToHex(textHue, random(80, 100), random(85, 95));
 
+        // Accent: A third distinct color (e.g., split complementary)
+        const accentHue = (textHue + 30) % 360;
+        accent = hslToHex(accentHue, 100, 60);
+
     } else if (strategy < 0.8) {
         // Strategy 2: Light & Dark (Classic Clean)
         // BG: Very light, low saturation (Cream, Pale Blue, etc)
@@ -47,31 +51,19 @@ export const generateRandomColors = () => {
         // Text: Dark, matching hue or neutral
         text = hslToHex(hue, random(10, 20), random(5, 15));
 
-    } else {
-        // Strategy 3: Bold/Vibrant Background (Pop Art)
-        // BG: High saturation, medium lightness
-        const hue = random(0, 360);
-        bg = hslToHex(hue, random(60, 90), random(45, 60));
+        // Accent: Vibrant version of the main hue or complementary
+        accent = hslToHex((hue + 180) % 360, 70, 50);
 
-        // Text: White or Very Dark depending on luminance
-        // Simple check: if L > 50 use dark, else white. 
-        // Since we set L to 45-60, it varies. Let's force high contrast.
-        // For simplicity in this specific vibrant range, pure white or pure black usually works best.
-        // Let's rely on a simple logic:
-        text = '#ffffff';
-        // If we want to be safe, we could calculate luminance, but 
-        // for this specific "Vibrant" bucket (L 45-60), white is often readable, 
-        // but black (#000000) might be safer for the brighter/yellow ranges.
-        // Let's just pick a very dark color for better ensuring contrast if lighter vibrant.
-        if (bg > '#888888') { // extremely naive hex check, better to use the L value we just picked
-            // actually we know the L is random(45, 60). 
-            // If L > 50, prefer dark text.
-        }
-        // Let's refine Strategy 3 to be safer: "Deep & Vibrant"
+    } else {
+        // Strategy 3: Deep & Vibrant
         // Use deep vibrant BG, bright text
+        const hue = random(0, 360);
         bg = hslToHex(hue, random(70, 100), random(35, 45)); // Darker vibrant
         text = '#ffffff';
+
+        // Accent: Bright contrasting color (e.g., yellow/cyan/magenta against deep bg)
+        accent = hslToHex((hue + 60) % 360, 100, 70);
     }
 
-    return { backgroundColor: bg, textColor: text };
+    return { backgroundColor: bg, textColor: text, accentColor: accent };
 };

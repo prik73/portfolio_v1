@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Github, ExternalLink, Mail } from 'lucide-react';
 import { FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
 
+
 const projects = [
   {
     title: "Clickity (famous among the GEN Z)",
@@ -54,16 +55,48 @@ const projects = [
 ];
 
 import { generateRandomColors } from '../utils/colors';
+import { trackVisit, getUniqueVisitors } from '../utils/analytics';
+import { supabase } from '../lib/supabase';
 
 export default function Home() {
   const [greeting, setGreeting] = useState("Good afternoon!");
   const [activeSection, setActiveSection] = useState("home");
+  const [visitCount, setVisitCount] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState(1);
   const [themeColor, setThemeColor] = useState(() => {
     const saved = JSON.parse(localStorage.getItem('themeColor'));
-    return saved || { backgroundColor: '#000000', textColor: '#ffffff' };
+    return saved || { backgroundColor: '#000000', textColor: '#ffffff', accentColor: '#10B981' };
   });
   const sectionsRef = useRef({});
 
+  // Analytics & Realtime
+  useEffect(() => {
+    // 1. Track Visit & Get Total Unique
+    trackVisit();
+    getUniqueVisitors().then(count => {
+      if (count) setVisitCount(count);
+    });
+
+    // 2. Realtime Online Users
+    if (supabase.supabaseUrl) { // Only if configured
+      const channel = supabase.channel('online-users');
+      channel
+        .on('presence', { event: 'sync' }, () => {
+          const presenceState = channel.presenceState();
+          const count = Object.keys(presenceState).length;
+          setOnlineUsers(count > 0 ? count : 1);
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await channel.track({ online_at: new Date().toISOString() });
+          }
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, []);
 
   // Update greeting based on time
   useEffect(() => {
@@ -139,7 +172,8 @@ export default function Home() {
     { id: 'home', label: 'Home' },
     { id: 'projects', label: 'Projects' },
     { id: 'about', label: 'About' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'contact', label: 'Contact' },
+    { id: 'stats', label: 'Stats', path: '/stats' }
   ];
 
   return (
@@ -155,6 +189,7 @@ export default function Home() {
         '--theme-border': themeColor.textColor + '33', // 20% opacity
         '--theme-inverse-bg': themeColor.textColor,
         '--theme-inverse-text': themeColor.backgroundColor,
+        '--theme-accent': themeColor.accentColor || '#10B981', // Fallback to green
       }}
     >
       {/* Left Sidebar Navigation */}
@@ -163,7 +198,7 @@ export default function Home() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => scrollToSection(item.id)}
+              onClick={() => item.path ? window.location.href = item.path : scrollToSection(item.id)}
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-left
                 ${activeSection === item.id
@@ -190,7 +225,7 @@ export default function Home() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => scrollToSection(item.id)}
+              onClick={() => item.path ? window.location.href = item.path : scrollToSection(item.id)}
               className={`
                 text-sm font-medium transition-all duration-300 relative group text-right
                 ${activeSection === item.id
@@ -366,56 +401,42 @@ export default function Home() {
         {/* Contact Section */}
         <section
           ref={el => sectionsRef.current['contact'] = el}
-          className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)] text-center"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-center"
           >
             <h2 className="text-3xl lg:text-4xl font-bold mb-12">Get in Touch</h2>
-
             <a
               href="mailto:prinovac@gmail.com"
               className="text-xl transition-colors mb-8 inline-block text-[var(--theme-text)] hover:opacity-80"
             >
               prinovac@gmail.com
             </a>
-
             <div className="flex gap-6 items-center justify-center text-2xl mt-8 text-[var(--theme-text-muted)]">
-              <a
-                href="https://github.com/prik73"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[var(--theme-text)] transition-colors"
-              >
-                <FaGithub />
-              </a>
-              <a
-                href="https://www.instagram.com/catchydam/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[var(--theme-text)] transition-colors"
-              >
-                <FaInstagram />
-              </a>
-              <a
-                href="https://twitter.com/prik73"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[var(--theme-text)] transition-colors"
-              >
-                <FaTwitter />
-              </a>
+              {/* Social Icons would go here if we want them back, or keep it super minimal */}
+              <a href="https://github.com/prik73" target="_blank" className="hover:text-[var(--theme-text)]"><FaGithub /></a>
+              <a href="https://twitter.com/prik73" target="_blank" className="hover:text-[var(--theme-text)]"><FaTwitter /></a>
+              <a href="https://instagram.com/catchydham" target="_blank" className="hover:text-[var(--theme-text)]"><FaInstagram /></a>
             </div>
           </motion.div>
         </section>
 
         {/* Footer */}
-        <div className="py-8 text-center text-sm border-t border-[var(--theme-border)] text-[var(--theme-text-muted)]">
+        <div className="py-8 text-center text-sm border-t border-[var(--theme-border)] text-[var(--theme-text-muted)] flex flex-col gap-2 items-center">
           <p>Built with sweat and blood.</p>
+          {(visitCount > 0) && (
+            <div className="flex gap-4 items-center justify-center text-xs opacity-70">
+              <span>Total Visits: {visitCount.toLocaleString()}</span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full bg-[var(--theme-accent)] animate-pulse"></div>
+                {onlineUsers} Online
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
