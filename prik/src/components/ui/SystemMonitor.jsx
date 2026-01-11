@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBatteryThreeQuarters, FaWifi, FaMicrochip, FaGlobe, FaDesktop, FaMemory } from 'react-icons/fa';
+import {
+    FaBatteryThreeQuarters,
+    FaWifi,
+    FaMicrochip,
+    FaGlobe,
+    FaDesktop,
+    FaGamepad
+} from 'react-icons/fa';
 
 export const SystemMonitor = ({ isOpen, onClose }) => {
     const [stats, setStats] = useState({
@@ -9,6 +16,7 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
         hardware: null,
         screen: null,
         geo: null,
+        advanced: null,
         loading: true
     });
 
@@ -16,16 +24,18 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
         if (!isOpen) return;
 
         const gatherStats = async () => {
-            // 1. Hardware (Offline)
+            /* ---------------- HARDWARE ---------------- */
             const hardware = {
                 cores: navigator.hardwareConcurrency || 'Unknown',
-                memory: navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : 'Unknown',
+                memory: navigator.deviceMemory
+                    ? `~${navigator.deviceMemory} GB`
+                    : 'Unknown',
                 userAgent: navigator.userAgent,
                 platform: navigator.platform,
                 language: navigator.language
             };
 
-            // 2. Screen (Offline)
+            /* ---------------- SCREEN ---------------- */
             const screenData = {
                 width: window.screen.width,
                 height: window.screen.height,
@@ -33,37 +43,94 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                 pixelRatio: window.devicePixelRatio
             };
 
-            // 3. Network (Reliable Native API - Offlineish)
-            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            const netData = connection ? {
-                type: connection.effectiveType || 'Unknown',
-                downlink: connection.downlink ? `${connection.downlink} Mbps` : 'Unknown',
-                rtt: connection.rtt ? `${connection.rtt} ms` : 'Unknown'
-            } : null;
+            /* ---------------- NETWORK ---------------- */
+            const connection =
+                navigator.connection ||
+                navigator.mozConnection ||
+                navigator.webkitConnection;
 
-            // 4. Battery (Native API)
+            const netData = connection
+                ? {
+                    type: connection.effectiveType || 'Unknown',
+                    downlink: connection.downlink
+                        ? `${connection.downlink} Mbps`
+                        : 'Unknown',
+                    rtt: connection.rtt ? `${connection.rtt} ms` : 'Unknown'
+                }
+                : null;
+
+            /* ---------------- BATTERY ---------------- */
             let batteryData = null;
             if (navigator.getBattery) {
                 try {
                     const b = await navigator.getBattery();
                     batteryData = {
-                        level: Math.round(b.level * 100) + '%',
+                        level: `${Math.round(b.level * 100)}%`,
                         charging: b.charging ? 'Charging' : 'Discharging'
                     };
-                } catch (e) { console.warn('Battery API not supported'); }
+                } catch { }
             }
 
-            // 5. Geo (Online)
+            /* ---------------- GEO ---------------- */
             let geoData = null;
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 if (res.ok) geoData = await res.json();
-            } catch (e) {
-                // Fallback
+            } catch {
                 try {
                     const res2 = await fetch('https://ipwho.is/');
                     if (res2.ok) geoData = await res2.json();
-                } catch (e2) { }
+                } catch { }
+            }
+
+            /* ---------------- ADVANCED ---------------- */
+            const advanced = {
+                gpu: 'Unknown',
+                storage: 'Unknown',
+                touch:
+                    navigator.maxTouchPoints > 0
+                        ? `${navigator.maxTouchPoints} Points`
+                        : 'No Touch',
+                input: window.matchMedia('(pointer:fine)').matches
+                    ? 'Mouse / Fine'
+                    : 'Touch / Coarse'
+            };
+
+            // GPU
+            try {
+                const canvas = document.createElement('canvas');
+                const gl =
+                    canvas.getContext('webgl') ||
+                    canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension(
+                        'WEBGL_debug_renderer_info'
+                    );
+                    if (debugInfo) {
+                        advanced.gpu = gl.getParameter(
+                            debugInfo.UNMASKED_RENDERER_WEBGL
+                        );
+                    }
+                }
+            } catch { }
+
+            // Storage
+            if (navigator.storage?.estimate) {
+                try {
+                    const estimate = await navigator.storage.estimate();
+                    if (estimate.quota) {
+                        advanced.storage = `${(
+                            estimate.usage /
+                            1024 /
+                            1024
+                        ).toFixed(0)}MB / ${(
+                            estimate.quota /
+                            1024 /
+                            1024 /
+                            1024
+                        ).toFixed(0)}GB`;
+                    }
+                } catch { }
             }
 
             setStats({
@@ -72,21 +139,21 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                 connection: netData,
                 battery: batteryData,
                 geo: geoData,
+                advanced,
                 loading: false
             });
         };
 
         gatherStats();
-
         const interval = setInterval(gatherStats, 13000);
         return () => clearInterval(interval);
     }, [isOpen]);
 
+    /* ---------------- UI ---------------- */
     return (
         <AnimatePresence>
             {isOpen && (
                 <>
-                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -95,15 +162,13 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
                     />
 
-                    {/* Modal */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed inset-0 m-auto z-50 w-full max-w-4xl h-fit max-h-[90vh] overflow-y-auto p-2 md:p-8"
+                        className="fixed inset-0 m-auto z-50 w-full max-w-4xl max-h-[90vh] overflow-y-auto p-4"
                     >
-                        <div className="bg-[#0a0a0a] border border-[var(--theme-border)] rounded-2xl p-3 md:p-6 shadow-2xl relative overflow-hidden">
-                            {/* Close Button */}
+                        <div className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-3 md:p-6 shadow-2xl relative overflow-hidden">
                             <button
                                 onClick={onClose}
                                 className="absolute top-3 right-3 md:top-4 md:right-4 text-xs opacity-50 hover:opacity-100 p-2"
@@ -111,9 +176,9 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                                 [CLOSE]
                             </button>
 
-                            <div className="flex items-center gap-3 mb-4 md:mb-8 border-b border-[var(--theme-border)] pb-4">
+                            <div className="flex items-center gap-3 mb-4 md:mb-8 border-b border-zinc-800 pb-4">
                                 <div className="w-3 h-3 rounded-full bg-[var(--theme-accent)] animate-pulse" />
-                                <h2 className="text-xl font-bold font-mono text-[var(--theme-accent)]">SYSTEM_DIAGNOSTICS_TOOL</h2>
+                                <h2 className="text-xl font-bold font-mono text-[var(--theme-accent)]">SYSTEM_DIAGNOSTICS</h2>
                             </div>
 
                             {stats.loading ? (
@@ -179,43 +244,32 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                                     </div>
 
                                     {/* Section 5: Geo */}
-                                    <div className="col-span-1 md:col-span-2 md:p-4 md:rounded-xl md:bg-zinc-900/50 md:border md:border-zinc-800">
+                                    <div className="mb-6 md:mb-0 md:p-4 md:rounded-xl md:bg-zinc-900/50 md:border md:border-zinc-800">
                                         <div className="flex items-center gap-2 mb-2 md:mb-3 text-[var(--theme-accent)]">
                                             <FaGlobe /> <span className="font-bold uppercase tracking-wider md:tracking-normal">Geolocation</span>
                                         </div>
                                         {stats.geo ? (
-                                            <div className="pl-6 md:pl-0 border-l border-zinc-800 md:border-none">
-                                                {/* Mobile View: Stacked Text */}
-                                                <div className="md:hidden space-y-2 text-zinc-500">
-                                                    <div className="flex justify-between"><span>City</span> <span className="text-zinc-200">{stats.geo.city}</span></div>
-                                                    <div className="flex justify-between"><span>Country</span> <span className="text-zinc-200">{stats.geo.country || stats.geo.country_name}</span></div>
-                                                    <div className="flex justify-between"><span>ISP</span> <span className="text-zinc-200">{stats.geo.org || stats.geo.isp}</span></div>
-                                                    <div className="flex justify-between"><span>Coords</span> <span className="text-zinc-200 font-mono text-xs">{stats.geo.latitude} / {stats.geo.longitude}</span></div>
-                                                </div>
-
-                                                {/* Desktop View: Grid */}
-                                                <div className="hidden md:grid grid-cols-2 gap-4 text-zinc-400">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs opacity-50">City</span>
-                                                        <span className="text-zinc-200">{stats.geo.city}</span>
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs opacity-50">Country</span>
-                                                        <span className="text-zinc-200">{stats.geo.country || stats.geo.country_name}</span>
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs opacity-50">ISP</span>
-                                                        <span className="text-zinc-200">{stats.geo.org || stats.geo.isp || 'Unknown'}</span>
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs opacity-50">Coordinates</span>
-                                                        <span className="font-mono text-xs text-zinc-200">{stats.geo.latitude}, {stats.geo.longitude}</span>
-                                                    </div>
-                                                </div>
+                                            <div className="space-y-1 md:space-y-2 text-zinc-500 md:text-zinc-400 pl-6 md:pl-0 border-l border-zinc-800 md:border-none">
+                                                <div className="flex justify-between"><span>City</span> <span className="text-zinc-200">{stats.geo.city}</span></div>
+                                                <div className="flex justify-between"><span>Country</span> <span className="text-zinc-200">{stats.geo.country || stats.geo.country_name}</span></div>
+                                                <div className="flex justify-between"><span>ISP</span> <span className="text-zinc-200 text-xs text-right max-w-[120px] truncate">{stats.geo.org || stats.geo.isp}</span></div>
                                             </div>
                                         ) : (
                                             <div className="text-xs opacity-50 pl-6 md:pl-0 border-l border-zinc-800 md:border-none">Signal Lost / Blocked</div>
                                         )}
+                                    </div>
+
+                                    {/* Section 6: Advanced */}
+                                    <div className="mb-6 md:mb-0 md:p-4 md:rounded-xl md:bg-zinc-900/50 md:border md:border-zinc-800">
+                                        <div className="flex items-center gap-2 mb-2 md:mb-3 text-[var(--theme-accent)]">
+                                            <FaGamepad /> <span className="font-bold uppercase tracking-wider md:tracking-normal">Peripherals</span>
+                                        </div>
+                                        <div className="space-y-1 md:space-y-2 text-zinc-500 md:text-zinc-400 pl-6 md:pl-0 border-l border-zinc-800 md:border-none">
+                                            <div className="flex justify-between"><span>GPU</span> <span className="text-zinc-200 text-xs text-right max-w-[150px] truncate" title={stats.advanced.gpu}>{stats.advanced.gpu}</span></div>
+                                            <div className="flex justify-between"><span>Storage</span> <span className="text-zinc-200">{stats.advanced.storage}</span></div>
+                                            <div className="flex justify-between"><span>Input</span> <span className="text-zinc-200">{stats.advanced.input}</span></div>
+                                            <div className="flex justify-between"><span>Touch</span> <span className="text-zinc-200">{stats.advanced.touch}</span></div>
+                                        </div>
                                     </div>
 
                                 </div>
