@@ -110,7 +110,7 @@ export default function Contact() {
               <FaGithub />
             </motion.a>
             <motion.a
-              href="https://www.instagram.com/prik.73/"
+              href="https://www.instagram.com/catchydham/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-pink-400 transition-colors"

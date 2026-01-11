@@ -394,7 +394,7 @@ export default function Home() {
                 <FaGithub />
               </a>
               <a
-                href="https://www.instagram.com/prik.73/"
+                href="https://www.instagram.com/catchydam/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-[var(--theme-text)] transition-colors"
