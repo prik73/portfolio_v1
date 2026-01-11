@@ -26,15 +26,27 @@ export const trackVisit = async () => {
         // 4. Gather Data
         let geo = {};
         try {
-            const res = await fetch(IP_API);
+            // Try primary API
+            const res = await fetch('https://ipapi.co/json/');
             if (res.ok) {
                 geo = await res.json();
+            } else {
+                throw new Error('Primary API failed');
             }
         } catch (e) {
-            console.warn('Failed to fetch geo data', e);
+            console.warn('Primary geo API failed, trying fallback...', e);
+            try {
+                // Fallback API
+                const res = await fetch('https://ipwho.is/');
+                if (res.ok) {
+                    geo = await res.json();
+                }
+            } catch (e2) {
+                console.warn('All geo APIs failed', e2);
+            }
         }
 
-        const { city, country_name: country } = geo;
+        const { city, country_name: country, latitude, longitude } = geo;
         const { userAgent } = navigator;
 
         // 5. Parse simplified device/OS (Regex helper)
@@ -53,6 +65,8 @@ export const trackVisit = async () => {
             visitor_id: visitorId,
             city: city || 'Unknown',
             country: country || 'Unknown',
+            latitude: latitude || null,
+            longitude: longitude || null,
             device_type,
             os,
             browser: userAgent, // minimal parsing for now

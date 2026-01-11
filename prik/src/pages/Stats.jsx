@@ -4,7 +4,9 @@ import { supabase } from '../lib/supabase';
 import { FaUsers, FaGlobeAmericas } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext'; // Import useTheme context
 import { useTransition } from '../context/TransitionContext'; // Import useTransition context
-import { Map, MapControls } from '../components/ui/map';
+
+import { SystemMonitor } from '../components/ui/SystemMonitor';
+
 
 
 
@@ -13,7 +15,7 @@ import { Map, MapControls } from '../components/ui/map';
 export default function Stats() {
     const [totalVisits, setTotalVisits] = useState(0);
     const [onlineUsers, setOnlineUsers] = useState(1);
-    const [locations, setLocations] = useState([]);
+    const [showSystemMonitor, setShowSystemMonitor] = useState(false);
     const { themeColor } = useTheme(); // Use global theme
     const { startTransition } = useTransition();
 
@@ -23,21 +25,6 @@ export default function Stats() {
             const { count } = await supabase.from('website_visits').select('*', { count: 'exact', head: true });
             if (count) setTotalVisits(count);
 
-            // Fetch locations (grouped by country/city would be better in RPC, but let's fetch last 50 for map markers)
-            // Note: fetching raw rows to client isn't great for scale, better to enable an RPC function.
-            // For this portfolio, we'll fetch unique cities from last 1000 rows locally.
-            const { data } = await supabase.from('website_visits').select('city, country').limit(500);
-
-            if (data) {
-                // Mocking coordinates for simplicity since we only stored city names string. 
-                // In a real app, we should store lat/long in the DB.
-                // For this demo, let's just show some static markers or if we had coords.
-                // Actually, let's skip markers on map if we don't have lat/long, 
-                // OR we can just visually highlight countries if we match names.
-                // Let's go with highlighting countries that have visitors.
-                const countries = new Set(data.map(d => d.country));
-                setLocations(Array.from(countries));
-            }
         };
         fetchStats();
 
@@ -85,7 +72,7 @@ export default function Stats() {
                         <h1 className="text-3xl font-bold">Traffic & Stats</h1>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
 
                         <div className="p-4 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-inverse-bg)]/5">
                             <div className="flex items-center gap-3 mb-2 opacity-70">
@@ -106,28 +93,27 @@ export default function Stats() {
                             )}
                         </div>
 
-                        <div className="p-4 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-inverse-bg)]/5">
-                            <div className="flex items-center gap-3 mb-2 opacity-70">
-                                <FaGlobeAmericas />
-                                <span className="text-sm font-medium">Countries Reached</span>
-                            </div>
-                            <p className="text-3xl font-bold">{locations.length}</p>
-                        </div>
-
                     </div>
 
 
-                    <div className="border border-[var(--theme-border)] rounded-xl p-4 overflow-hidden bg-[var(--theme-inverse-bg)]/5">
-                        <h2 className="text-xl font-bold mb-4 ml-2">Visitor Map</h2>
-                        <div className="h-[300px] w-full rounded-lg overflow-hidden relative">
-                            <Map center={[20, 0]} zoom={1.5}>
-                                <MapControls />
-                                {/* We can map locations to markers here if we had lat/long data */}
-                                {/* For now, just showing the beautiful dark basemap as requested */}
-                            </Map>
-                        </div>
-                    </div>
+
                 </motion.div>
+
+                {/* System Diagnostics Toggle */}
+                <div className="fixed bottom-4 right-4 opacity-50 hover:opacity-100 transition-opacity flex flex-col items-end gap-2">
+                    <button
+                        onClick={() => setShowSystemMonitor(true)}
+                        className="text-[10px] uppercase tracking-wider font-mono border border-[var(--theme-text)]/20 bg-[var(--theme-bg)] text-[var(--theme-text)] px-3 py-1.5 rounded hover:bg-[var(--theme-text)] hover:text-[var(--theme-inverse-text)] transition-all"
+                    >
+                        [ SYSTEM_DIAGNOSTICS ]
+                    </button>
+                </div>
             </div>
-        </div>);
+
+            <SystemMonitor
+                isOpen={showSystemMonitor}
+                onClose={() => setShowSystemMonitor(false)}
+            />
+        </div>
+    );
 }
