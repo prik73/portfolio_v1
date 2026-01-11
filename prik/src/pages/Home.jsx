@@ -1,11 +1,68 @@
-import { useEffect, useState } from "react";
-import { Github, ArrowRight } from "lucide-react";
-import { AuroraText } from "@/components/magicui/aurora-text"; 
+import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Github, ExternalLink, Mail } from 'lucide-react';
+import { FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
+
+const projects = [
+  {
+    title: "Clickity (famous among the GEN Z)",
+    description: "A beautiful nonsense project that somehow got 1000 people to use it :) ",
+    techStack: ["Node.js", "React", "Tailwind", "AWS", "GitHub Actions", "i dunno why I added actions, but still"],
+    live: "https://clic.prik.dev",
+  },
+  {
+    title: "SMM Foundation Website",
+    description: "freelance project for SMM Foundation, which is an NGO based in Gurgaon.",
+    techStack: ["React", "Bootstrap"],
+    github: "https://github.com/prik73/smm-foundation-website",
+    live: "https://smmfoundation.org.in",
+  },
+  {
+    title: "Drunk Monk Micro-Blogging",
+    description: "Full-stack micro-blogging platform with ChatGPT hate speech detection",
+    techStack: ["MERN", "JWT", "Cloudinary"],
+    live: "https://drunk-monk-micro-bloging.onrender.com/",
+    github: "https://github.com/prik73/Drunk-Monk-Micro-Blogging",
+  },
+  {
+    title: "Multithreaded Reverse Proxy Server",
+    description: "Reverse proxy web server in C with thread pools and LRU cache",
+    techStack: ["C", "Sockets", "Multithreading"],
+    github: "https://github.com/prik73/reverse-proxy-server",
+  },
+  {
+    title: "Drunk Ape M2",
+    description: "Video calling and collaborative code editor platform",
+    techStack: ["WebRTC", "Socket.IO", "React"],
+    live: "https://minor2codevc.vercel.app/",
+    github: "https://github.com/prik73/drunk_ape_m2",
+  },
+  {
+    title: "Web IDE Basic",
+    description: "Web-based IDE with code editing and execution",
+    techStack: ["React", "CodeMirror", "Node.js"],
+    live: "https://web-ide-pg-client.onrender.com/",
+    github: "https://github.com/prik73/web_ide_basic",
+  },
+  {
+    title: "Particle Design",
+    description: "Interactive particle animations",
+    techStack: ["JavaScript", "Canvas"],
+    github: "https://github.com/prik73/particle_design",
+    live: "https://particle-design.vercel.app/"
+  },
+];
 
 export default function Home() {
-  const [greeting, setGreeting] = useState("Good morning!");
-  const [coffeeCount, setCoffeeCount] = useState(3);
+  const [greeting, setGreeting] = useState("Good afternoon!");
+  const [activeSection, setActiveSection] = useState("home");
+  const [isLightMode, setIsLightMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved === 'light';
+  });
+  const sectionsRef = useRef({});
 
+  // Update greeting based on time
   useEffect(() => {
     const updateGreeting = () => {
       const hour = new Date().getHours();
@@ -19,146 +76,337 @@ export default function Home() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleCoffeeClick = () => {
-    setCoffeeCount(prev => prev + 1);
+  // Toggle theme function
+  const toggleTheme = () => {
+    setIsLightMode(prev => {
+      const newMode = !prev;
+      localStorage.setItem('theme', newMode ? 'light' : 'dark');
+      return newMode;
+    });
   };
 
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-4xl mx-auto px-6 py-24">
-        
-        {/* Main Content - Single Column, Natural Flow */}
-        <div className="space-y-12">
-          
-          {/* Hero Section */}
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{greeting}</h1>
-              <h2 className="text-2xl text-blue-400">I'm Priyanshu</h2>
-            </div>
-            
-            <div className="text-gray-300 space-y-4 max-w-2xl">
-              <p>
-                22-year-old developer who gets genuinely excited about clean code 
-                and loses track of time watching YouTube videos about why legacy 
-                systems are still running the world.
-              </p>
-              
-              <p>
-                I turn <AuroraText>problems into solutions</AuroraText> using React, 
-                Node.js, and an unhealthy amount of Stack Overflow.
-              </p>
-            </div>
+  // Listen for double-click, 'd', 'Ctrl', and 'Tab' key press
+  useEffect(() => {
+    const handleDoubleClick = () => toggleTheme();
+    const handleKeyPress = (e) => {
+      if (e.key === 'd' || e.key === 'D' || e.key === 'Control' || e.key === 'Tab') {
+        e.preventDefault();
+        toggleTheme();
+      }
+    };
 
-            <div className="flex gap-3">
-              <a
-                href="/projects"
-                className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition"
+    document.addEventListener('dblclick', handleDoubleClick);
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('dblclick', handleDoubleClick);
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  // Scroll spy to update active section
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'projects', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
+        const element = sectionsRef.current[section];
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId) => {
+    const element = sectionsRef.current[sectionId];
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const navItems = [
+    { id: 'home', label: 'Home' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'about', label: 'About' },
+    { id: 'contact', label: 'Contact' }
+  ];
+
+  return (
+    <div className={`min-h-screen transition-colors duration-500 ${isLightMode ? 'text-neutral-900' : 'bg-black text-white'}`} style={isLightMode ? { backgroundColor: '#FFFAED' } : {}}>
+      {/* Left Sidebar Navigation */}
+      <nav className="fixed left-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
+        <div className="flex flex-col space-y-6">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`
+                text-sm font-medium transition-all duration-300 relative group text-left
+                ${activeSection === item.id
+                  ? isLightMode ? 'text-neutral-900' : 'text-white'
+                  : isLightMode ? 'text-neutral-500 hover:text-neutral-700' : 'text-gray-500 hover:text-gray-300'}
+              `}
+            >
+              {activeSection === item.id && (
+                <motion.span
+                  layoutId="activeNav"
+                  className={`absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${isLightMode ? 'bg-neutral-900' : 'bg-white'}`}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* Mobile Bottom-Right Navigation */}
+      <nav className="lg:hidden fixed bottom-6 right-6 z-50">
+        <div className="flex flex-col space-y-6 items-end">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`
+                text-sm font-medium transition-all duration-300 relative group text-right
+                ${activeSection === item.id
+                  ? isLightMode ? 'text-neutral-900' : 'text-white'
+                  : isLightMode ? 'text-neutral-500 hover:text-neutral-700' : 'text-gray-500 hover:text-gray-300'}
+              `}
+            >
+              {activeSection === item.id && (
+                <motion.span
+                  layoutId="activeMobileNav"
+                  className={`absolute -right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${isLightMode ? 'bg-neutral-900' : 'bg-white'}`}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 lg:px-12 lg:ml-48">
+
+        {/* Hero Section */}
+        <section
+          ref={el => sectionsRef.current['home'] = el}
+          className="min-h-screen flex flex-col justify-center py-20"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-6xl lg:text-7xl font-bold mb-4 tracking-tight">
+              {greeting}
+            </h1>
+            <p className={`text-xl lg:text-2xl mb-8 ${isLightMode ? 'text-neutral-600' : 'text-gray-400'}`}>
+              I'm Priyanshu, a backend developer who tries to build scalable systems, but my users are my few friends. But it can scale! :)
+            </p>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => scrollToSection('projects')}
+                className={`px-6 py-3 rounded-lg font-medium transition-colors ${isLightMode
+                  ? 'bg-neutral-900 text-white hover:bg-neutral-800'
+                  : 'bg-white text-black hover:bg-gray-200'
+                  }`}
               >
-                See my work <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
-              
+                View Projects
+              </button>
               <a
                 href="https://github.com/prik73"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 border border-gray-600 text-white rounded hover:bg-gray-800 transition"
+                className={`px-6 py-3 rounded-lg font-medium transition-colors border ${isLightMode
+                  ? 'bg-transparent text-neutral-900 border-neutral-900 hover:bg-neutral-900 hover:text-white'
+                  : 'bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700'
+                  }`}
               >
-                <Github className="mr-2 h-4 w-4" /> GitHub
+                GitHub
               </a>
             </div>
-          </div>
+          </motion.div>
+        </section>
 
-          {/* About Section */}
-          <div className="border-t border-gray-800 pt-8">
-            <h3 className="text-xl font-semibold mb-4 text-gray-200">// About Me (Status: 404)</h3>
-            <div className="text-gray-400 max-w-2xl space-y-3">
+        {/* Projects Section */}
+        <section
+          ref={el => sectionsRef.current['projects'] = el}
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold mb-12">Projects</h2>
+
+            <div className="space-y-6">
+              {projects.map((project, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="border-b border-neutral-800 pb-6 last:border-b-0"
+                >
+                  {project.live ? (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xl font-semibold mb-2 hover:text-blue-400 transition-colors inline-block"
+                    >
+                      {project.title}
+                    </a>
+                  ) : (
+                    <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                  )}
+                  <p className={`mb-3 ${isLightMode ? 'text-neutral-700' : 'text-gray-400'}`}>{project.description}</p>
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {project.techStack.map((tech, idx) => (
+                      <span
+                        key={idx}
+                        className={`text-xs px-2 py-1 rounded border ${isLightMode ? 'bg-neutral-200 text-neutral-800 border-neutral-300' : 'bg-neutral-800 text-gray-300 border-neutral-700'}`}
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-4 text-sm">
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center gap-1 transition-colors ${isLightMode ? 'text-neutral-700 hover:text-neutral-900' : 'text-gray-400 hover:text-white'}`}
+                    >
+                      <Github className="w-4 h-4" />
+                      Code
+                    </a>
+                    {project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Live
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* About Section */}
+        <section
+          ref={el => sectionsRef.current['about'] = el}
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold mb-8">
+              <span className={isLightMode ? 'text-neutral-500' : 'text-gray-500'}>{'<'}</span>
+              About
+              <span className={isLightMode ? 'text-neutral-500' : 'text-gray-500'}>{' />'}</span>
+            </h2>
+
+            <div className={`space-y-4 text-lg leading-relaxed max-w-2xl ${isLightMode ? 'text-neutral-700' : 'text-gray-300'}`}>
               <p>
-                My "About Me" section is currently debugging itself. While it's down, 
-                here's what you need to know: I turn coffee into functional components 
-                and have never met a bug that couldn't be fixed with more console.logs.
+                Started my B.Tech degree in 2022, diving headfirst into the world of programming.
+                By 2024, I was freelancing and building web applications that solve real problems.
               </p>
-              <a href="/about" className="text-blue-400 hover:underline">
-                Debug this section →
-              </a>
-            </div>
-          </div>
 
-          {/* Skills Section */}
-          <div className="border-t border-gray-800 pt-8">
-            <h3 className="text-xl font-semibold mb-4 text-gray-200">Things I Pretend to Master</h3>
-            <div className="max-w-lg space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-300">JavaScript</span>
-                <span className="text-green-400 font-mono text-sm">▓▓▓▓▓▓▓▓░░ 80%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-300">React</span>
-                <span className="text-blue-400 font-mono text-sm">▓▓▓▓▓▓▓░░░ 75%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-300">Centering Divs</span>
-                <span className="text-yellow-400 font-mono text-sm">▓▓▓▓▓▓░░░░ 60%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-300">Imposter Syndrome</span>
-                <span className="text-red-400 font-mono text-sm">▓▓▓▓▓▓▓▓▓▓ 100%</span>
-              </div>
-              <p className="text-xs text-gray-500 mt-3">
-                * Percentages may fluctuate based on coffee intake
+              <p>
+                I build backend systems that don't just work, they scale. From designing RESTful APIs
+                to optimizing database queries, I focus on writing code that's maintainable, performant,
+                and actually makes sense six months later.
+              </p>
+
+              <p>
+                Currently exploring microservices architecture, API design patterns, and database
+                optimization to build better systems.
               </p>
             </div>
-          </div>
+          </motion.div>
+        </section>
 
-          {/* Currently Section */}
-          <div className="border-t border-gray-800 pt-8">
-            <h3 className="text-xl font-semibold mb-4 text-gray-200">Currently</h3>
-            <div className="text-gray-400 max-w-2xl">
-              <ul className="space-y-2">
-                <li>• Building things that hopefully don't break in production</li>
-                <li>• Learning why my code works on my machine but nowhere else</li>
-                <li>• Pretending to understand system design</li>
-                <li>• Available for projects (translation: please hire me)</li>
-              </ul>
-              <div className="mt-4">
-                <a href="/contact" className="text-green-400 hover:underline">
-                  Let's work together →
-                </a>
-              </div>
-            </div>
-          </div>
+        {/* Contact Section */}
+        <section
+          ref={el => sectionsRef.current['contact'] = el}
+          className="min-h-screen flex flex-col justify-center py-20 border-t border-neutral-800"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <h2 className="text-3xl lg:text-4xl font-bold mb-12">Get in Touch</h2>
 
-          {/* Projects CTA */}
-          <div className="border-t border-gray-800 pt-8">
-            <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-6 max-w-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Want to see what I've actually built?
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                Spoiler: Some of it even works as intended.
-              </p>
+            <a
+              href="mailto:prinovac@gmail.com"
+              className={`text-xl transition-colors mb-8 inline-block ${isLightMode ? 'text-neutral-800 hover:text-neutral-900' : 'text-gray-300 hover:text-white'}`}
+            >
+              prinovac@gmail.com
+            </a>
+
+            <div className={`flex gap-6 items-center justify-center text-2xl mt-8 ${isLightMode ? 'text-neutral-700' : 'text-gray-400'}`}>
               <a
-                href="/projects"
-                className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition"
+                href="https://github.com/prik73"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
               >
-                View Projects <ArrowRight className="ml-2 h-4 w-4" />
+                <FaGithub />
+              </a>
+              <a
+                href="https://www.instagram.com/prik.73/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="https://twitter.com/prik73"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                <FaTwitter />
               </a>
             </div>
-          </div>
+          </motion.div>
+        </section>
 
-          {/* Footer */}
-          <div className="border-t border-gray-800 pt-6 text-sm text-gray-500">
-            <p>
-              Currently powered by {coffeeCount} cups of coffee today
-              <button 
-                onClick={handleCoffeeClick}
-                className="ml-2 opacity-40 hover:opacity-80 transition-opacity"
-                title="☕"
-              >
-                ☕
-              </button>
-            </p>
-          </div>
+        {/* Footer */}
+        <div className={`py-8 text-center text-sm border-t ${isLightMode ? 'text-neutral-600 border-neutral-300' : 'text-gray-500 border-neutral-800'}`}>
+          <p>Built with sweat and blood.</p>
         </div>
       </div>
     </div>
