@@ -171,7 +171,7 @@ export const SystemMonitor = ({ isOpen, onClose }) => {
                         <div className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-3 md:p-6 shadow-2xl relative overflow-hidden">
                             <button
                                 onClick={onClose}
-                                className="absolute top-3 right-3 md:top-4 md:right-4 text-xs opacity-50 hover:opacity-100 p-2"
+                                className="absolute top-3 text-zinc-500 right-3 md:top-4 md:right-4 text-xs opacity-50 hover:opacity-100 p-2"
                             >
                                 [CLOSE]
                             </button>
