@@ -282,7 +282,15 @@ export default function Home() {
             viewport={{ once: true }}
             className="pr-20 lg:pr-0"
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-12">Projects</h2>
+            <div className="inline-block mb-12">
+              <div className="p-1 border border-[var(--theme-border)] rounded-lg bg-[var(--theme-inverse-bg)]">
+                <div className="p-1 border border-[var(--theme-border)] rounded-lg bg-[var(--theme-bg)]">
+                  <div className="px-6 py-3 bg-[var(--theme-bg)]">
+                    <h2 className="text-4xl lg:text-5xl font-bold underline hover:no-underline transition-all cursor-pointer">Projects</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="space-y-6">
               {projects.map((project, index) => (
