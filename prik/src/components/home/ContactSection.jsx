@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { FaGithub, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaInstagram } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 export default function ContactSection({ sectionsRef }) {
     return (
@@ -34,7 +35,7 @@ export default function ContactSection({ sectionsRef }) {
                         <FaGithub />
                     </a>
                     <a href="https://twitter.com/prik73" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
-                        <FaTwitter />
+                        <FaXTwitter />
                     </a>
                     <a href="https://instagram.com/catchydham" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
                         <FaInstagram />
