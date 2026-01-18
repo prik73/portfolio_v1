@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { generateRandomColors } from '../utils/colors';
+import { generateRandomColors, PREMIUM_THEMES } from '../utils/colors';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
     const [themeColor, setThemeColor] = useState(() => {
         const saved = JSON.parse(localStorage.getItem('themeColor'));
-        return saved || { backgroundColor: '#000000', textColor: '#ffffff', accentColor: '#10B981' };
+        // Default to the first premium theme (Deep Midnight) if no saved theme
+        return saved || PREMIUM_THEMES[0];
     });
 
     const randomizeTheme = () => {
@@ -45,7 +46,8 @@ export const ThemeProvider = ({ children }) => {
                     '--theme-border': themeColor.textColor + '33',
                     '--theme-inverse-bg': themeColor.textColor,
                     '--theme-inverse-text': themeColor.backgroundColor,
-                    '--theme-accent': themeColor.accentColor || '#10B981',
+                    '--theme-accent': themeColor.accentColor,
+                    '--theme-secondary': themeColor.secondaryColor || themeColor.backgroundColor,
                     minHeight: '100vh',
                     transition: 'background-color 0.5s ease, color 0.5s ease'
                 }}
