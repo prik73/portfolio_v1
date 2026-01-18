@@ -1,5 +1,6 @@
+
 import { motion } from 'framer-motion';
-import { FaGithub, FaInstagram } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 
 export default function ContactSection({ sectionsRef }) {
@@ -33,6 +34,9 @@ export default function ContactSection({ sectionsRef }) {
                 <div className="flex gap-6 items-center justify-center text-2xl mt-4 text-[var(--theme-text-muted)]">
                     <a href="https://github.com/prik73" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
                         <FaGithub />
+                    </a>
+                    <a href="https://www.linkedin.com/in/prik73/" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
+                        <FaLinkedin />
                     </a>
                     <a href="https://twitter.com/prik73" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
                         <FaXTwitter />
