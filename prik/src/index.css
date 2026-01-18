@@ -282,3 +282,7 @@ body {
   padding: 0;
   height: 100%;
 }
+
+br::selection {
+  background-color: transparent !important;
+}
