@@ -13,14 +13,23 @@ export default function ContactSection({ sectionsRef }) {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
             >
-                <h2 className="text-3xl lg:text-4xl font-bold mb-12">Get in Touch</h2>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-8">Get in Touch</h2>
+                <div className="max-w-2xl mx-auto mb-10 text-[var(--theme-text-muted)] space-y-4">
+                    <p>
+                        If you have any comments or feedback regarding my projects, or this very page,
+                        or just want to say <span className="text-[var(--theme-accent)] font-semibold">Hi / Namaste :)</span>,
+                        you can use any of the platforms below.
+                    </p>
+                    <p>Would love to hear from you!</p>
+                </div>
+
                 <a
                     href="mailto:prinovac@gmail.com"
-                    className="text-xl transition-colors mb-8 inline-block text-[var(--theme-text)] hover:opacity-80"
+                    className="text-xl lg:text-2xl font-semibold transition-all mb-8 inline-block text-[var(--theme-text)] hover:text-[var(--theme-accent)] hover:tracking-wide"
                 >
                     prinovac@gmail.com
                 </a>
-                <div className="flex gap-6 items-center justify-center text-2xl mt-8 text-[var(--theme-text-muted)]">
+                <div className="flex gap-6 items-center justify-center text-2xl mt-4 text-[var(--theme-text-muted)]">
                     <a href="https://github.com/prik73" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--theme-text)]">
                         <FaGithub />
                     </a>
