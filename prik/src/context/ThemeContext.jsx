@@ -6,7 +6,7 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
     const [themeColor, setThemeColor] = useState(() => {
         const saved = JSON.parse(localStorage.getItem('themeColor'));
-        // Default to the first premium theme (Deep Midnight) if no saved theme
+        // Default to the first premium theme (Midnight) if no saved theme
         return saved || PREMIUM_THEMES[0];
     });
 
@@ -43,11 +43,13 @@ export const ThemeProvider = ({ children }) => {
                     '--theme-bg': themeColor.backgroundColor,
                     '--theme-text': themeColor.textColor,
                     '--theme-text-muted': themeColor.textColor + 'b3',
-                    '--theme-border': themeColor.textColor + '33',
+                    '--theme-border': themeColor.borderColor || themeColor.textColor + '33',
+                    '--theme-surface': themeColor.surfaceColor || themeColor.backgroundColor,
                     '--theme-inverse-bg': themeColor.textColor,
                     '--theme-inverse-text': themeColor.backgroundColor,
                     '--theme-accent': themeColor.accentColor,
                     '--theme-secondary': themeColor.secondaryColor || themeColor.backgroundColor,
+                    '--theme-tertiary': themeColor.tertiaryColor || themeColor.accentColor,
                     minHeight: '100vh',
                     transition: 'background-color 0.5s ease, color 0.5s ease'
                 }}
