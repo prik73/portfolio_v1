@@ -6,6 +6,14 @@ export const projects = [
         live: "https://dead.prik.dev",
     },
     {
+        title: "Mediasoup Broadcast",
+        description: "Real-time video conferencing (Mediasoup) broadcasted via HLS (FFmpeg).Google Meet meets YouTube Live.",
+        techStack: ["Mediasoup", "WebRTC", "FFmpeg", "HLS", "Docker"],
+        live: "https://stream.prik.dev",
+        github: "https://github.com/prik73/mediasoup-hls",
+        docker: "https://vercel.com/prik73s-projects/mediasoup-docker-setup",
+    },
+    {
         title: "Clickity (famous among the GEN Z)",
         description: "A beautiful nonsense project that somehow got 1300 people to use it :) ",
         techStack: ["Node.js", "React", "Tailwind", "AWS", "GitHub Actions", "i dunno why I added actions, but still"],

@@ -13,6 +13,8 @@ import AboutSection from '../components/home/AboutSection';
 import ContactSection from '../components/home/ContactSection';
 import Footer from '../components/home/Footer';
 
+import ThemeToggle from '../components/ui/ThemeToggle';
+
 export default function Home() {
   const [greeting, setGreeting] = useState("Good afternoon!");
   const [activeSection, setActiveSection] = useState("home");
@@ -117,6 +119,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: themeColor.backgroundColor, color: themeColor.textColor }}>
+      <ThemeToggle />
       <Navigation
         activeSection={activeSection}
         navItems={navItems}

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, Terminal } from 'lucide-react';
 import { projects } from '../../data/projects';
 
 export default function ProjectsSection({ sectionsRef }) {
@@ -70,6 +70,17 @@ export default function ProjectsSection({ sectionsRef }) {
                                     >
                                         <Github className="w-4 h-4" />
                                         Code
+                                    </a>
+                                )}
+                                {project.docker && (
+                                    <a
+                                        href={project.docker}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
+                                    >
+                                        <Terminal className="w-4 h-4" />
+                                        Test Locally
                                     </a>
                                 )}
                                 {project.live && (
