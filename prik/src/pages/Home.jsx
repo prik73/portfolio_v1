@@ -112,6 +112,7 @@ export default function Home() {
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'projects', label: 'Projects' },
+    { id: 'blog', label: 'Blogs', url: 'https://blog.prik.dev' },
     { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact' },
     { id: 'stats', label: 'Stats', path: '/stats' }

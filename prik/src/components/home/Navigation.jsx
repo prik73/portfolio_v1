@@ -10,7 +10,9 @@ export default function Navigation({ activeSection, navItems, scrollToSection, h
                         <button
                             key={item.id}
                             onClick={(e) => {
-                                if (item.path) {
+                                if (item.url) {
+                                    window.open(item.url, '_blank');
+                                } else if (item.path) {
                                     handleStatsClick(e, item.path);
                                 } else {
                                     scrollToSection(item.id);
@@ -42,7 +44,9 @@ export default function Navigation({ activeSection, navItems, scrollToSection, h
                         <button
                             key={item.id}
                             onClick={(e) => {
-                                if (item.path) {
+                                if (item.url) {
+                                    window.open(item.url, '_blank');
+                                } else if (item.path) {
                                     handleStatsClick(e, item.path);
                                 } else {
                                     scrollToSection(item.id);

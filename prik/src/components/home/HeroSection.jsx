@@ -20,18 +20,26 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                     Have created some fun projects. Try them out, just scroll down, would love to know your feedback :)
                 </p>
 
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-4">
                     <button
                         onClick={() => scrollToSection('projects')}
-                        className="px-6 py-3 rounded-lg font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90 shadow-lg"
+                        className="px-8 py-3 rounded font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90 shadow-lg"
                     >
                         View Projects
                     </button>
                     <a
+                        href="https://blog.prik.dev"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-3 rounded font-medium transition-colors border border-[var(--theme-border)] hover:bg-[var(--theme-inverse-bg)] hover:text-[var(--theme-inverse-text)]"
+                    >
+                        Read Blogs
+                    </a>
+                    <a
                         href="https://github.com/prik73"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-6 py-3 rounded-lg font-medium transition-colors border border-[var(--theme-border)] hover:bg-[var(--theme-inverse-bg)] hover:text-[var(--theme-inverse-text)]"
+                        className="px-13 py-3 rounded font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90 shadow-lg"
                     >
                         GitHub
                     </a>
