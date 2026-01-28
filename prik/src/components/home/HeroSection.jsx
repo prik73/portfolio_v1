@@ -16,7 +16,7 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                     {greeting}
                 </h1>
                 <p className="text-xl md:text-2xl mb-10 text-[var(--theme-text-muted)] leading-relaxed">
-                    <span className="text-[var(--theme-text)] font-semibold">I'm Priyanshu</span>, a <span className="text-[var(--theme-text)] font-semibold">tinkerer</span> who tries to build scalable systems. Currently exploring what we can do with web-technologies.<br />
+                    <span className="text-[var(--theme-text)] font-semibold">I'm Priyanshu</span>, a <span className="text-[var(--theme-text)] font-semibold">tinkerer</span> who tries to build scalable systems. Currently exploring what wild things I can do with web-technologies.<br />
                     Have created some fun projects. Try them out, just scroll down, would love to know your feedback :)
                 </p>
 
