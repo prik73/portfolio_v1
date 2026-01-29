@@ -20,6 +20,12 @@ export const projects = [
         live: "https://clic.prik.dev",
     },
     {
+        title: "Heat",
+        description: "Fun little laptop heater for winter weather, built to test Web Workers.",
+        techStack: ["React", "TypeScript", "Web Workers"],
+        live: "https://heat.prik.dev",
+    },
+    {
         title: "SMM Foundation Website",
         description: "freelance project for SMM Foundation, which is an NGO based in Gurgaon.",
         techStack: ["React", "Bootstrap"],
