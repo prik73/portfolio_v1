@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { generateRandomColors, PREMIUM_THEMES } from '../utils/colors';
+import { generateRandomColors } from '../utils/colors';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
     const [themeColor, setThemeColor] = useState(() => {
         const saved = JSON.parse(localStorage.getItem('themeColor'));
-        // Default to the first premium theme (Midnight) if no saved theme
-        return saved || PREMIUM_THEMES[0];
+        // Default to a generated theme if no saved theme
+        return saved || generateRandomColors();
     });
 
     const randomizeTheme = () => {
@@ -43,13 +43,13 @@ export const ThemeProvider = ({ children }) => {
                     '--theme-bg': themeColor.backgroundColor,
                     '--theme-text': themeColor.textColor,
                     '--theme-text-muted': themeColor.textColor + 'b3',
-                    '--theme-border': themeColor.borderColor || themeColor.textColor + '33',
-                    '--theme-surface': themeColor.surfaceColor || themeColor.backgroundColor,
+                    '--theme-border': themeColor.textColor + '33',
+                    '--theme-surface': themeColor.backgroundColor,
                     '--theme-inverse-bg': themeColor.textColor,
                     '--theme-inverse-text': themeColor.backgroundColor,
-                    '--theme-accent': themeColor.accentColor,
-                    '--theme-secondary': themeColor.secondaryColor || themeColor.backgroundColor,
-                    '--theme-tertiary': themeColor.tertiaryColor || themeColor.accentColor,
+                    '--theme-accent': themeColor.textColor,
+                    '--theme-secondary': themeColor.backgroundColor,
+                    '--theme-tertiary': themeColor.textColor,
                     minHeight: '100vh',
                     transition: 'background-color 0.5s ease, color 0.5s ease'
                 }}
