@@ -192,7 +192,7 @@ export default function Snake() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen flex flex-col items-center justify-center px-6 gap-10"
+      className="min-h-screen flex flex-col px-8 py-16"
       style={{ backgroundColor: bg, color: fg }}
     >
       <ThemeToggle />
@@ -206,62 +206,69 @@ export default function Snake() {
         ← back
       </a>
 
-      {/* URL snake info */}
-      <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="font-mono text-4xl font-bold tracking-widest uppercase" style={{ color: fg }}>
-          URL Snake
-        </h1>
-        <p className="font-mono text-sm" style={{ color: fg + '88' }}>
-          The game is running in your address bar ↑
-        </p>
-        <p className="font-mono text-xs tracking-wider" style={{ color: fg + '88' }}>
-          WASD / ↑↓←→ to move
-        </p>
-        {best > 0 && (
-          <p className="font-mono text-xs tracking-widest" style={{ color: fg }}>
-            best score: {best}
-          </p>
-        )}
+      {/* Two-col on wide, stacked on mobile */}
+      <div className="flex-1 flex flex-col lg:flex-row lg:items-center items-center lg:justify-start justify-center gap-16 lg:gap-24 lg:pl-24">
+
+        {/* LEFT — info + triangle */}
+        <div className="flex flex-col gap-8 lg:items-start items-center lg:text-left text-center lg:w-122 shrink-0">
+          <div className="flex flex-col gap-3">
+            <h1 className="font-mono text-4xl font-bold tracking-widest uppercase" style={{ color: fg }}>
+              URL Snake
+            </h1>
+            <p className="font-mono text-sm" style={{ color: fg + '88' }}>
+              The game is running in your address bar ↑
+            </p>
+            <p className="font-mono text-xs tracking-wider" style={{ color: fg + '88' }}>
+              WASD / ↑↓←→ to move
+            </p>
+            {best > 0 && (
+              <p className="font-mono text-xs tracking-widest" style={{ color: fg }}>
+                best score: {best}
+              </p>
+            )}
+          </div>
+
+          {/* Triangle */}
+          <div className="flex flex-col lg:items-start items-center gap-2">
+            <button
+              onClick={() => setBoardOpen(v => !v)}
+              className="transition-opacity hover:opacity-60"
+              title={boardOpen ? 'Close board' : 'Play on board'}
+              style={{ background: 'none', border: 'none', padding: 0 }}
+            >
+              <motion.svg
+                width="52"
+                height="52"
+                viewBox="0 0 72 72"
+                animate={{ rotate: boardOpen ? 90 : 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <polygon points="14,8 14,64 62,36" fill={fg} />
+              </motion.svg>
+            </button>
+            <p className="font-mono text-xs tracking-widest" style={{ color: fg + '66' }}>
+              {boardOpen ? 'click to close board' : 'click to play on board'}
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT — canvas board */}
+        <AnimatePresence>
+          {boardOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SnakeGame />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </div>
 
-      {/* Triangle → canvas board */}
-      <div className="flex flex-col items-center gap-3">
-        <button
-          onClick={() => setBoardOpen(v => !v)}
-          className="transition-opacity hover:opacity-60"
-          title={boardOpen ? 'Close board' : 'Play on board'}
-          style={{ background: 'none', border: 'none', padding: 0 }}
-        >
-          <motion.svg
-            width="56"
-            height="56"
-            viewBox="0 0 72 72"
-            animate={{ rotate: boardOpen ? 90 : 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <polygon points="14,8 14,64 62,36" fill={fg} />
-          </motion.svg>
-        </button>
-        <p className="font-mono text-xs tracking-widest" style={{ color: fg + '66' }}>
-          {boardOpen ? 'click to close board' : 'click to play on board'}
-        </p>
-      </div>
-
-      {/* Canvas game board */}
-      <AnimatePresence>
-        {boardOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <SnakeGame />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <p className="fixed bottom-6 font-mono text-xs tracking-widest" style={{ color: fg + '88' }}>
+      <p className="fixed bottom-6 left-1/2 -translate-x-1/2 font-mono text-xs tracking-widest" style={{ color: fg + '88' }}>
         original concept by{' '}
         <a
           href="https://github.com/epidemian/snake"
