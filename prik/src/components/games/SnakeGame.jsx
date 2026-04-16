@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
-const CELL = 24;
+const CELL = 18;
 const COLS = 20;
 const ROWS = 20;
-const CANVAS_SIZE = CELL * COLS; // 480px
-const R = 5; // corner radius for rounded rects
+const CANVAS_SIZE = CELL * COLS; // 360px
 
 const DIRS = {
   ArrowUp:    { x: 0,  y: -1 },
@@ -18,19 +17,6 @@ const DIRS = {
   d: { x: 1,  y:  0 }, D: { x: 1,  y:  0 },
 };
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
 
 function randomFood(snake) {
   let pos;
@@ -107,21 +93,18 @@ export default function SnakeGame() {
     snake.forEach((seg, i) => {
       const t     = 1 - i / (snake.length + 6);
       const alpha = i === 0 ? 1 : 0.25 + 0.75 * t;
-      const pad   = i === 0 ? 2 : 4;
-      const x     = seg.x * CELL + pad;
-      const y     = seg.y * CELL + pad;
-      const size  = CELL - pad * 2;
-      const rad   = i === 0 ? R : R - 1;
+      const pad  = i === 0 ? 2 : 4;
+      const x    = seg.x * CELL + pad;
+      const y    = seg.y * CELL + pad;
+      const size = CELL - pad * 2;
 
       ctx.fillStyle = `rgba(${fr},${fg2},${fb},${alpha.toFixed(2)})`;
-      roundRect(ctx, x, y, size, size, rad);
-      ctx.fill();
+      ctx.fillRect(x, y, size, size);
 
       // head highlight
       if (i === 0) {
         ctx.fillStyle = `rgba(${fr},${fg2},${fb},0.18)`;
-        roundRect(ctx, x + 2, y + 2, size / 2, size / 3, 2);
-        ctx.fill();
+        ctx.fillRect(x + 2, y + 2, size / 2, size / 3);
       }
     });
   }, [bg, fg]);
@@ -277,10 +260,7 @@ export default function SnakeGame() {
         )}
       </div>
 
-      {/* hint */}
-      <p className="font-mono text-[10px] tracking-widest uppercase" style={{ color: fg + '44' }}>
-        WASD / ↑↓←→ &nbsp;·&nbsp; Space to pause
-      </p>
+
 
       {/* mobile d-pad */}
       <div className="flex flex-col items-center gap-1 md:hidden">
