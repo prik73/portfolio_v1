@@ -102,11 +102,9 @@ export default function Home() {
 
   const handleStatsClick = (e, path) => {
     e.preventDefault();
-    if (path === '/stats') {
-      const x = e.clientX;
-      const y = e.clientY;
-      startTransition(x, y, path);
-    }
+    const x = e.clientX;
+    const y = e.clientY;
+    startTransition(x, y, path);
   };
 
   const navItems = [
@@ -115,12 +113,22 @@ export default function Home() {
     { id: 'blog', label: 'Blogs', url: 'https://blog.prik.dev' },
     { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact' },
-    { id: 'stats', label: 'Stats', path: '/stats' }
+    { id: 'stats', label: 'Stats', path: '/stats' },
   ];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: themeColor.backgroundColor, color: themeColor.textColor }}>
       <ThemeToggle />
+
+      {/* Snake link — top left */}
+      <button
+        onClick={(e) => startTransition(e.clientX, e.clientY, '/snake')}
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 font-mono text-xs font-bold tracking-widest uppercase underline underline-offset-4 transition-opacity hover:opacity-50"
+        style={{ color: themeColor.textColor }}
+      >
+        snake ↗
+      </button>
+
       <Navigation
         activeSection={activeSection}
         navItems={navItems}

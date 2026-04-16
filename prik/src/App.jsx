@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Stats from './pages/Stats';
+import Snake from './pages/Snake';
 import { Analytics } from "@vercel/analytics/react";
 import { AnimatePresence } from 'framer-motion';
 import { TransitionProvider } from './context/TransitionContext';
@@ -15,6 +16,7 @@ function AppRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/stats" element={<Stats />} />
+        <Route path="/snake" element={<Snake />} />
       </Routes>
     </AnimatePresence>
   );

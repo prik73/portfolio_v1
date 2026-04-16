@@ -20,10 +20,10 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                     Have created some fun projects. Try them out, just scroll down, would love to know your feedback :)
                 </p>
 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-3">
                     <button
                         onClick={() => scrollToSection('projects')}
-                        className="px-8 py-3 rounded font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90 shadow-lg"
+                        className="px-5 py-2 text-sm font-mono tracking-widest uppercase transition-all duration-200 border border-[var(--theme-text)] text-[var(--theme-text)] hover:bg-[var(--theme-text)] hover:text-[var(--theme-bg)]"
                     >
                         View Projects
                     </button>
@@ -31,7 +31,7 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                         href="https://blog.prik.dev"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-3 rounded font-medium transition-colors border border-[var(--theme-border)] hover:bg-[var(--theme-inverse-bg)] hover:text-[var(--theme-inverse-text)]"
+                        className="px-5 py-2 text-sm font-mono tracking-widest uppercase transition-all duration-200 border border-[var(--theme-text)] text-[var(--theme-text)] hover:bg-[var(--theme-text)] hover:text-[var(--theme-bg)]"
                     >
                         Read Blogs
                     </a>
@@ -39,9 +39,17 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                         href="https://github.com/prik73"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-13 py-3 rounded font-medium transition-colors bg-[var(--theme-inverse-bg)] text-[var(--theme-inverse-text)] hover:opacity-90 shadow-lg"
+                        className="px-5 py-2 text-sm font-mono tracking-widest uppercase transition-all duration-200 border border-[var(--theme-text)] text-[var(--theme-text)] hover:bg-[var(--theme-text)] hover:text-[var(--theme-bg)]"
                     >
                         GitHub
+                    </a>
+                    <a
+                        href="https://drive.google.com/file/d/14yioCM1VcLtcMuhdQgaiJ8pU58519Ze8/view?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2 text-sm font-mono tracking-widest uppercase transition-all duration-200 border border-[var(--theme-text)] text-[var(--theme-text)] hover:bg-[var(--theme-text)] hover:text-[var(--theme-bg)]"
+                    >
+                        Resume
                     </a>
                 </div>
             </motion.div>
