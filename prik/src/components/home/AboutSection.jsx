@@ -1,22 +1,24 @@
+const points = [
+    "Started engineering in 2022, finished it in 2026.",
+    "We can eat food and ice creams together, professionally and personally.",
+    "I am trying to live in the moment  .",
+    "I read books sometimes, and ponder on them mostly.",
+    "love obscure memes, music of Sigur Rós, Chitra ji, NFAK, mr. jagjit uncle, history of technology, and etymology.",
+    "Though I have very surface knowledge of everything.",
+];
+
 export default function AboutSection() {
     return (
         <section id="about" className="mb-12 scroll-mt-6">
             <h2 className="font-[Verdana,sans-serif] text-xl font-bold mb-4">About</h2>
-            <div className="space-y-3 text-[var(--theme-text-muted)]">
-                <p>
-                    Started my B.Tech degree in 2022, diving headfirst into the world of programming.
-                    By 2024, I was freelancing and building web applications that solve real problems.
-                </p>
-                <p>
-                    I build backend systems that don't just work, they scale. From designing RESTful APIs
-                    to optimizing database queries, I focus on writing code that's maintainable, performant,
-                    and actually makes sense six months later.
-                </p>
-                <p>
-                    Currently exploring microservices architecture, API design patterns, and database
-                    optimization to build better systems.
-                </p>
-            </div>
+            <ul className="space-y-1 text-[var(--theme-text-muted)]">
+                {points.map((point) => (
+                    <li key={point} className="flex gap-3">
+                        <span aria-hidden="true">–</span>
+                        <span>{point}</span>
+                    </li>
+                ))}
+            </ul>
         </section>
     );
 }

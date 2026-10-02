@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { projects } from '../../data/projects';
 
 const linkClass = "underline underline-offset-2 text-[var(--theme-link)] hover:no-underline";
@@ -8,6 +8,18 @@ const MAX_OPEN = 2;
 export default function ProjectsSection() {
     // Titles of expanded projects, oldest first; opening a third closes the oldest.
     const [openTitles, setOpenTitles] = useState([]);
+
+    const [sectionOpen, setSectionOpen] = useState(false);
+
+    // Nav links to #projects should reveal the collapsed list
+    useEffect(() => {
+        const openIfTargeted = () => {
+            if (window.location.hash === '#projects') setSectionOpen(true);
+        };
+        openIfTargeted();
+        window.addEventListener('hashchange', openIfTargeted);
+        return () => window.removeEventListener('hashchange', openIfTargeted);
+    }, []);
 
     const toggle = (title) => {
         setOpenTitles((prev) =>
@@ -19,9 +31,18 @@ export default function ProjectsSection() {
 
     return (
         <section id="projects" className="mb-12 scroll-mt-6">
-            <h2 className="font-[Verdana,sans-serif] text-xl font-bold mb-4">Projects</h2>
+            <h2 className="font-[Verdana,sans-serif] text-xl font-bold mb-4">
+                <button
+                    onClick={() => setSectionOpen((o) => !o)}
+                    aria-expanded={sectionOpen}
+                    className="flex items-baseline gap-3 cursor-pointer font-bold"
+                >
+                    <span aria-hidden="true" className={`w-3 text-base transition-transform ${sectionOpen ? 'rotate-90' : ''}`}>▸</span>
+                    Projects
+                </button>
+            </h2>
 
-            <div className="border-t border-[var(--theme-border)]">
+            <div className={`border-t border-[var(--theme-border)] ${sectionOpen ? '' : 'hidden'}`}>
                 {projects.map((project) => (
                     <details key={project.title} open={openTitles.includes(project.title)} className="group border-b border-[var(--theme-border)]">
                         <summary onClick={(e) => { e.preventDefault(); toggle(project.title); }} className="flex items-baseline gap-3 py-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
