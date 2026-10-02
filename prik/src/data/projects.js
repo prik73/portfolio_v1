@@ -1,9 +1,31 @@
 export const projects = [
     {
+        title: "MOOC Quiz",
+        description: "Quiz app that ran for just 2 weeks, and helped users along the way.",
+        techStack: [],
+        live: "https://mooc.doof.love",
+        image: "/projects/mooc.png",
+    },
+    {
+        title: "Heat",
+        description: "Fun little laptop heater for winter weather, built to test Web Workers.",
+        techStack: ["React", "TypeScript", "Web Workers"],
+        live: "https://heat.doof.love",
+    },
+    {
+        title: "Clickity (briefly got famous among the 300 gen Z folks)",
+        description: "A beautiful nonsense project that somehow got 1300 people to use it :) ",
+        techStack: ["Node.js", "React", "Tailwind", "AWS", "GitHub Actions", "i dunno why I added actions, but still"],
+        live: "https://clic.doof.love",
+        note: "currently down",
+        image: "/projects/clickity.png",
+    },
+    {
         title: "Dead Poll",
         description: "Fun platform to create polls and vote anonymously. (Used by 300+ users)",
         techStack: ["Node.js", "React", "WebSockets", "PostgreSQL", "AWS EC2", "Docker", "Nginx", "GitHub Actions"],
         live: "https://dead.doof.love",
+        note: "currently down",
     },
     {
         title: "Mediasoup Broadcast",
@@ -12,18 +34,6 @@ export const projects = [
         live: "https://stream.doof.love",
         github: "https://github.com/prik73/mediasoup-hls",
         docker: "https://vercel.com/prik73s-projects/mediasoup-docker-setup",
-    },
-    {
-        title: "Clickity (famous among the GEN Z)",
-        description: "A beautiful nonsense project that somehow got 1300 people to use it :) ",
-        techStack: ["Node.js", "React", "Tailwind", "AWS", "GitHub Actions", "i dunno why I added actions, but still"],
-        live: "https://clic.doof.love",
-    },
-    {
-        title: "Heat",
-        description: "Fun little laptop heater for winter weather, built to test Web Workers.",
-        techStack: ["React", "TypeScript", "Web Workers"],
-        live: "https://heat.doof.love",
     },
     {
         title: "SMM Foundation Website",

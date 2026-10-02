@@ -1,21 +1,15 @@
-import { motion } from 'framer-motion';
-import { FaDice, FaPalette, FaRandom, FaMagic } from 'react-icons/fa';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function ThemeToggle() {
-    const { randomizeTheme } = useTheme();
+    const { toggleTheme, mode } = useTheme();
 
     return (
-        <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            whileHover={{ scale: 1.1, rotate: 180 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={randomizeTheme}
-            className="fixed top-6 right-6 z-50 p-2 rounded-full bg-[var(--theme-surface)] border border-[var(--theme-border)] text-[var(--theme-text-muted)] hover:text-[var(--theme-accent)] transition-colors shadow-sm"
-            title="Roll the dice! (Double-click anywhere)"
+        <button
+            onClick={toggleTheme}
+            className="fixed top-4 right-4 z-50 text-sm underline underline-offset-2 hover:no-underline text-[var(--theme-link)]"
+            title="Toggle dark mode"
         >
-            <FaDice size={20} />
-        </motion.button>
+            {mode === 'dark' ? 'light' : 'dark'}
+        </button>
     );
 }

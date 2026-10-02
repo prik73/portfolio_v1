@@ -1,7 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useTransition } from "../context/TransitionContext";
-import { useTheme } from "../context/ThemeContext";
 import { trackVisit, getUniqueVisitors } from '../utils/analytics';
 import { supabase } from '../lib/supabase';
 
@@ -17,13 +15,9 @@ import ThemeToggle from '../components/ui/ThemeToggle';
 
 export default function Home() {
   const [greeting, setGreeting] = useState("Good afternoon!");
-  const [activeSection, setActiveSection] = useState("home");
   const [visitCount, setVisitCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState(1);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const { themeColor, randomizeTheme } = useTheme();
   const { startTransition } = useTransition();
-  const sectionsRef = useRef({});
 
   // Analytics & Realtime
   useEffect(() => {
@@ -65,41 +59,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Scrollspy + Width Expansion
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-      // Check if we've scrolled past home section
-      const homeElement = sectionsRef.current['home'];
-      if (homeElement) {
-        const homeBottom = homeElement.offsetTop + homeElement.offsetHeight;
-        setIsExpanded(window.scrollY > homeBottom - 200);
-      }
-
-      for (const [id, element] of Object.entries(sectionsRef.current)) {
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(id);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (sectionId) => {
-    const element = sectionsRef.current[sectionId];
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   const handleStatsClick = (e, path) => {
     e.preventDefault();
     const x = e.clientX;
@@ -108,50 +67,24 @@ export default function Home() {
   };
 
   const navItems = [
-    { id: 'home', label: 'Home' },
     { id: 'projects', label: 'Projects' },
     { id: 'blog', label: 'Blogs', url: 'https://blog.doof.love' },
     { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact' },
     { id: 'stats', label: 'Stats', path: '/stats' },
+    { id: 'snake', label: 'Snake', path: '/snake' },
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: themeColor.backgroundColor, color: themeColor.textColor }}>
+    <div className="min-h-screen scroll-smooth" style={{ fontFamily: '"Times New Roman", Times, serif', fontSize: '17px', lineHeight: 1.6 }}>
       <ThemeToggle />
 
-      {/* Snake link — top left */}
-      <button
-        onClick={(e) => startTransition(e.clientX, e.clientY, '/snake')}
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 font-mono text-xs font-bold tracking-widest uppercase underline underline-offset-4 transition-opacity hover:opacity-50"
-        style={{ color: themeColor.textColor }}
-      >
-        snake ↗
-      </button>
-
-      <Navigation
-        activeSection={activeSection}
-        navItems={navItems}
-        scrollToSection={scrollToSection}
-        handleStatsClick={handleStatsClick}
-      />
-
-      <div
-        className={`mx-auto px-6 lg:px-12 transition-all duration-500 ${isExpanded ? 'max-w-6xl' : 'max-w-4xl'
-          }`}
-      >
-        <HeroSection
-          greeting={greeting}
-          scrollToSection={scrollToSection}
-          sectionsRef={sectionsRef}
-        />
-
-        <ProjectsSection sectionsRef={sectionsRef} />
-
-        <AboutSection sectionsRef={sectionsRef} />
-
-        <ContactSection sectionsRef={sectionsRef} />
-
+      <div className="mx-auto max-w-xl px-6 py-6">
+        <Navigation navItems={navItems} handleStatsClick={handleStatsClick} />
+        <HeroSection greeting={greeting} />
+        <ProjectsSection />
+        <AboutSection />
+        <ContactSection />
         <Footer visitCount={visitCount} onlineUsers={onlineUsers} />
       </div>
     </div>

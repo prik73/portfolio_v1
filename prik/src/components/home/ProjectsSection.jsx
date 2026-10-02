@@ -1,104 +1,61 @@
-import { motion } from 'framer-motion';
-import { Github, ExternalLink, Terminal } from 'lucide-react';
+import { useState } from 'react';
 import { projects } from '../../data/projects';
 
-export default function ProjectsSection({ sectionsRef }) {
+const linkClass = "underline underline-offset-2 text-[var(--theme-link)] hover:no-underline";
+
+const MAX_OPEN = 2;
+
+export default function ProjectsSection() {
+    // Titles of expanded projects, oldest first; opening a third closes the oldest.
+    const [openTitles, setOpenTitles] = useState([]);
+
+    const toggle = (title) => {
+        setOpenTitles((prev) =>
+            prev.includes(title)
+                ? prev.filter((t) => t !== title)
+                : [...prev, title].slice(-MAX_OPEN)
+        );
+    };
+
     return (
-        <section
-            ref={el => sectionsRef.current['projects'] = el}
-            data-section="projects"
-            className="min-h-screen flex flex-col justify-center py-20 border-t border-[var(--theme-border)]"
-        >
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-            >
-                <div className="inline-block mb-12">
-                    <div className="p-1 border border-[var(--theme-border)] rounded-lg bg-[var(--theme-inverse-bg)]">
-                        <div className="p-1 border border-[var(--theme-border)] rounded-lg bg-[var(--theme-bg)]">
-                            <div className="px-6 py-3 bg-[var(--theme-bg)]">
-                                <h2 className="text-4xl lg:text-5xl font-bold underline hover:no-underline transition-all cursor-pointer">Projects</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <section id="projects" className="mb-12 scroll-mt-6">
+            <h2 className="font-[Verdana,sans-serif] text-xl font-bold mb-4">Projects</h2>
 
-                <div className="space-y-6">
-                    {projects.map((project, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            viewport={{ once: true }}
-                            className="border-b border-[var(--theme-border)] pb-6 last:border-b-0"
-                        >
-                            {project.live ? (
-                                <a
-                                    href={project.live}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xl font-semibold mb-2 hover:opacity-80 transition-colors inline-block text-[var(--theme-text)]"
-                                >
-                                    {project.title}
-                                </a>
-                            ) : (
-                                <h3 className="text-xl font-semibold mb-2 text-[var(--theme-text)]">{project.title}</h3>
+            <div className="border-t border-[var(--theme-border)]">
+                {projects.map((project) => (
+                    <details key={project.title} open={openTitles.includes(project.title)} className="group border-b border-[var(--theme-border)]">
+                        <summary onClick={(e) => { e.preventDefault(); toggle(project.title); }} className="flex items-baseline gap-3 py-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                            <span aria-hidden="true" className="w-3 text-[var(--theme-text-muted)] transition-transform group-open:rotate-90">▸</span>
+                            <span className="font-semibold">{project.title}</span>
+                        </summary>
+
+                        <div className="pb-4 pl-6 space-y-3">
+                            <p className="text-[var(--theme-text-muted)]">{project.description}</p>
+
+                            {project.image && (
+                                <img
+                                    src={project.image}
+                                    alt={`${project.title} screenshot`}
+                                    loading="lazy"
+                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                    className="w-full border border-[var(--theme-border)]"
+                                />
                             )}
-                            <p className="mb-3 text-[var(--theme-text-muted)]">{project.description}</p>
 
-                            <div className="flex flex-wrap gap-2 mb-3">
-                                {project.techStack.map((tech, idx) => (
-                                    <span
-                                        key={idx}
-                                        className="text-xs px-2 py-1 rounded border border-[var(--theme-border)] text-[var(--theme-text)] font-medium"
-                                    >
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
+                            <p className="text-sm text-[var(--theme-text-muted)]">
+                                {project.techStack.length > 0 && project.techStack.join(' · ')}
+                            </p>
 
-                            <div className="flex gap-4 text-sm">
-                                {project.github && (
-                                    <a
-                                        href={project.github}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
-                                    >
-                                        <Github className="w-4 h-4" />
-                                        Code
-                                    </a>
-                                )}
-                                {project.docker && (
-                                    <a
-                                        href={project.docker}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-1 transition-colors text-[var(--theme-text-muted)] hover:text-[var(--theme-text)]"
-                                    >
-                                        <Terminal className="w-4 h-4" />
-                                        Test Locally
-                                    </a>
-                                )}
-                                {project.live && (
-                                    <a
-                                        href={project.live}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-1 text-[var(--theme-text)] font-semibold hover:opacity-80 transition-colors"
-                                    >
-                                        <ExternalLink className="w-4 h-4" />
-                                        Live
-                                    </a>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </motion.div>
+                            <p className="text-sm flex flex-wrap items-baseline gap-x-4">
+                                {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" className={linkClass}>live</a>}
+                                {project.note && <span className="text-red-500">{project.note}</span>}
+                                {project.github && <a href={project.github} target="_blank" rel="noopener noreferrer" className={linkClass}>code</a>}
+                                {project.docker && <a href={project.docker} target="_blank" rel="noopener noreferrer" className={linkClass}>test locally</a>}
+                            </p>
+                        </div>
+                    </details>
+                ))}
+            </div>
         </section>
     );
 }
