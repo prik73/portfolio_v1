@@ -28,7 +28,7 @@ export default function HeroSection({ greeting, scrollToSection, sectionsRef }) 
                         View Projects
                     </button>
                     <a
-                        href="https://blog.prik.dev"
+                        href="https://blog.doof.love"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-5 py-2 text-sm font-mono tracking-widest uppercase transition-all duration-200 border border-[var(--theme-text)] text-[var(--theme-text)] hover:bg-[var(--theme-text)] hover:text-[var(--theme-bg)]"

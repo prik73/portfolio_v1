@@ -41,7 +41,7 @@ export default function Games() {
           className="font-mono text-xs tracking-widest uppercase"
           style={{ color: fg + '44' }}
         >
-          prik.dev / games
+          doof.love / games
         </span>
       </header>
 
