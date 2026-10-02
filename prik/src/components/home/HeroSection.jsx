@@ -4,7 +4,7 @@ const linkClass = "underline underline-offset-2 text-[var(--theme-link)] hover:n
 const links = [
     { label: 'github', href: 'https://github.com/prik73', external: true },
     { label: 'instagram', href: 'https://instagram.com/catchydham', external: true },
-    { label: 'resume', href: 'https://drive.google.com/file/d/14yioCM1VcLtcMuhdQgaiJ8pU58519Ze8/view?usp=sharing', external: true },
+    { label: 'resume', href: '/resume.pdf', external: true },
 ];
 
 export default function HeroSection({ greeting }) {
